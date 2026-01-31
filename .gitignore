@@ -1,0 +1,27 @@
+# .NET Core #
+[Bb]in/
+[Oo]bj/
+
+# Visual Studio #
+.vs/
+*.user
+*.userosscache
+*.sln.docstates
+*.suo
+
+# Visual Studio Launch Settings #
+Properties/launchSettings.json
+
+# Build results #
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+
+# Others #
+.DS_Store
+.env
+.env.*
+!.env.example
