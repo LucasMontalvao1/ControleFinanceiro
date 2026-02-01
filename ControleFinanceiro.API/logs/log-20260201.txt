@@ -1,0 +1,47 @@
+2026-02-01 13:20:07.806 -03:00 [INF] Iniciando a API de Controle Financeiro...
+2026-02-01 13:20:08.696 -03:00 [INF] Iniciando a inicialização automática do banco de dados...
+2026-02-01 13:20:09.384 -03:00 [INF] Garantido que o banco de dados 'ControleFinanceiro' existe.
+2026-02-01 13:20:09.453 -03:00 [INF] Buscando scripts SQL em: C:\dev\ControleFinanceiro\ControleFinanceiro.API\bin\Debug\net10.0\Persistence\Scripts
+2026-02-01 13:20:09.493 -03:00 [INF] Aplicando migração: V000__Create_MigrationHistory.sql
+2026-02-01 13:20:09.510 -03:00 [INF] Migração V000__Create_MigrationHistory.sql aplicada com sucesso.
+2026-02-01 13:20:09.514 -03:00 [INF] Aplicando migração: V001__Create_Users_Table.sql
+2026-02-01 13:20:09.556 -03:00 [INF] Migração V001__Create_Users_Table.sql aplicada com sucesso.
+2026-02-01 13:20:09.559 -03:00 [INF] Aplicando migração: V002__Create_Categories_Table.sql
+2026-02-01 13:20:09.605 -03:00 [INF] Migração V002__Create_Categories_Table.sql aplicada com sucesso.
+2026-02-01 13:20:09.608 -03:00 [INF] Aplicando migração: V003__Create_Transactions_Table.sql
+2026-02-01 13:20:09.658 -03:00 [INF] Migração V003__Create_Transactions_Table.sql aplicada com sucesso.
+2026-02-01 13:20:09.660 -03:00 [INF] Inicialização do banco de dados finalizada.
+2026-02-01 13:20:09.869 -03:00 [INF] User profile is available. Using 'C:\Users\lucas.montalvao\AppData\Local\ASP.NET\DataProtection-Keys' as key repository and Windows DPAPI to encrypt keys at rest.
+2026-02-01 13:20:10.098 -03:00 [INF] Now listening on: https://localhost:7058
+2026-02-01 13:20:10.103 -03:00 [INF] Now listening on: http://localhost:5172
+2026-02-01 13:20:10.145 -03:00 [INF] Application started. Press Ctrl+C to shut down.
+2026-02-01 13:20:10.148 -03:00 [INF] Hosting environment: Development
+2026-02-01 13:20:10.150 -03:00 [INF] Content root path: C:\dev\ControleFinanceiro\ControleFinanceiro.API
+2026-02-01 13:20:10.761 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/scalar/v1 - null null
+2026-02-01 13:20:10.951 -03:00 [INF] Executing endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-02-01 13:20:10.996 -03:00 [INF] Write content with HTTP Response ContentType of text/html
+2026-02-01 13:20:11.020 -03:00 [INF] Executed endpoint 'HTTP: GET /scalar/{documentName?}'
+2026-02-01 13:20:11.030 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/scalar/v1 - 200 null text/html 281.3307ms
+2026-02-01 13:20:11.032 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/scalar/scalar.aspnetcore.js - null null
+2026-02-01 13:20:11.032 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/_framework/aspnetcore-browser-refresh.js - null null
+2026-02-01 13:20:11.032 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/scalar/scalar.js - null null
+2026-02-01 13:20:11.045 -03:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-02-01 13:20:11.060 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/_framework/aspnetcore-browser-refresh.js - 200 16529 application/javascript; charset=utf-8 27.512ms
+2026-02-01 13:20:11.061 -03:00 [INF] Executing endpoint 'HTTP: GET /scalar/scalar.js'
+2026-02-01 13:20:11.070 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/_vs/browserLink - null null
+2026-02-01 13:20:11.073 -03:00 [INF] Setting HTTP status code 304.
+2026-02-01 13:20:11.073 -03:00 [INF] Setting HTTP status code 304.
+2026-02-01 13:20:11.081 -03:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.aspnetcore.js'
+2026-02-01 13:20:11.084 -03:00 [INF] Executed endpoint 'HTTP: GET /scalar/scalar.js'
+2026-02-01 13:20:11.089 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/scalar/scalar.aspnetcore.js - 304 null null 56.7403ms
+2026-02-01 13:20:11.092 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/scalar/scalar.js - 304 null null 59.2206ms
+2026-02-01 13:20:11.117 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/_vs/browserLink - 200 null text/javascript; charset=UTF-8 47.2626ms
+2026-02-01 13:20:11.156 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/openapi/v1.json - null null
+2026-02-01 13:20:11.164 -03:00 [INF] Executing endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-02-01 13:20:11.185 -03:00 [INF] Executed endpoint 'HTTP: GET /openapi/{documentName}.json'
+2026-02-01 13:20:11.190 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/openapi/v1.json - 200 null application/json;charset=utf-8 33.5761ms
+2026-02-01 13:21:12.026 -03:00 [INF] Request starting HTTP/2 GET https://localhost:7058/api/Dashboard/summary - null null
+2026-02-01 13:21:12.043 -03:00 [INF] Authorization failed. These requirements were not met:
+DenyAnonymousAuthorizationRequirement: Requires an authenticated user.
+2026-02-01 13:21:12.051 -03:00 [INF] AuthenticationScheme: Bearer was challenged.
+2026-02-01 13:21:12.054 -03:00 [INF] Request finished HTTP/2 GET https://localhost:7058/api/Dashboard/summary - 401 0 null 28.6961ms
