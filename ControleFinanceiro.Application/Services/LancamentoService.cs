@@ -132,7 +132,7 @@ public class LancamentoService : ILancamentoService
         var catResults = await _lancamentoRepository.GetExpensesByCategoryAsync(usuarioId, startDate, endDate);
         var trendResults = await _lancamentoRepository.GetMonthlyEvolutionAsync(usuarioId, startDate, endDate);
         var yearlyResults = await _lancamentoRepository.GetYearlyEvolutionAsync(usuarioId, endDate);
-        var recentTransactions = await _lancamentoRepository.GetRecentAsync(usuarioId, 5);
+        var recentTransactions = await _lancamentoRepository.GetRecentAsync(usuarioId, 5, startDate, endDate);
 
         var response = new DashboardSummaryResponse(
             totalEntradas,
@@ -143,7 +143,7 @@ public class LancamentoService : ILancamentoService
             yearlyResults.Select(y => new EvolucaoMensalGraficoResponse(y.Mes, y.Entradas, y.Saidas, y.Saldo)),
             recentTransactions.Select(l => new LancamentoResponse(
                 l.Id, l.Descricao, l.Valor, l.Data, 
-                l.Tipo == "Entrada" ? "Receita" : "Despesa", // Map back to Frontend terminology
+                l.Tipo == "Entrada" ? "Receita" : "Despesa",
                 l.CategoriaId, l.CategoriaNome))
         );
         
