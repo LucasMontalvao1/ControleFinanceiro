@@ -26,12 +26,20 @@ export const routes: Routes = [
                 loadComponent: () => import('./features/dashboard/dashboard').then(m => m.DashboardComponent)
             },
             {
+                path: 'metas',
+                loadComponent: () => import('./features/metas/metas').then(m => m.MetasComponent)
+            },
+            {
                 path: 'categorias',
                 loadComponent: () => import('./features/categorias/categorias').then(m => m.CategoriasComponent)
             },
             {
                 path: 'lancamentos',
                 loadComponent: () => import('./features/lancamentos/lancamentos').then(m => m.LancamentosComponent)
+            },
+            {
+                path: 'recorrentes',
+                loadComponent: () => import('./features/recorrentes/recorrentes').then(m => m.RecorrentesComponent)
             },
             {
                 path: '',

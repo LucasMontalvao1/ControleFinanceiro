@@ -13,5 +13,5 @@ public interface ILancamentoRepository
     Task<IEnumerable<(string Categoria, decimal Valor)>> GetExpensesByCategoryAsync(int usuarioId, DateTime start, DateTime end);
     Task<IEnumerable<(DateTime Data, decimal Entradas, decimal Saidas)>> GetMonthlyEvolutionAsync(int usuarioId, DateTime start, DateTime end);
     Task<IEnumerable<(string Mes, decimal Entradas, decimal Saidas, decimal Saldo)>> GetYearlyEvolutionAsync(int usuarioId, DateTime end);
-    Task<IEnumerable<Lancamento>> GetRecentAsync(int usuarioId, int take);
+    Task<IEnumerable<Lancamento>> GetRecentAsync(int usuarioId, int take, DateTime? start = null, DateTime? end = null);
 }

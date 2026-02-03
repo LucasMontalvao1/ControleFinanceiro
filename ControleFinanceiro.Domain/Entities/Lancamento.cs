@@ -10,6 +10,7 @@ public class Lancamento
     public int UsuarioId { get; set; }
     public int CategoriaId { get; set; }
     public string CategoriaNome { get; set; } = string.Empty;
+    public int? RecorrenteId { get; set; }
     public DateTime CreatedAt { get; set; }
 
     public Lancamento()

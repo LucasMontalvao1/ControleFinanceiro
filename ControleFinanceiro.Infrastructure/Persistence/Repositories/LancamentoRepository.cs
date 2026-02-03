@@ -78,16 +78,15 @@ public class LancamentoRepository : ILancamentoRepository
         return results.Select(r => ((string)r.Mes, (decimal)r.Entradas, (decimal)r.Saidas, (decimal)r.Saldo));
     }
 
-    public async Task<IEnumerable<Lancamento>> GetRecentAsync(int usuarioId, int take)
+    public async Task<IEnumerable<Lancamento>> GetRecentAsync(int usuarioId, int take, DateTime? start = null, DateTime? end = null)
     {
-        const string sql = @"
-            SELECT l.*, c.Nome as CategoriaNome 
-            FROM Lancamentos l
-            INNER JOIN Categorias c ON l.CategoriaId = c.Id
-            WHERE l.UsuarioId = @UsuarioId
-            ORDER BY l.Data DESC, l.Id DESC
-            LIMIT @Take";
+        var sql = _sqlProvider.GetSql("Lancamento", "GetRecent");
         
-        return await _session.Connection.QueryAsync<Lancamento>(sql, new { UsuarioId = usuarioId, Take = take });
+        return await _session.Connection.QueryAsync<Lancamento>(sql, new { 
+            UsuarioId = usuarioId, 
+            Take = take,
+            Start = start ?? new DateTime(2000, 1, 1),
+            End = end ?? new DateTime(2100, 12, 31)
+        });
     }
 }

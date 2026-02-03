@@ -1,0 +1,142 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-info">
+            <h1>Metas de Orçamento</h1>
+            <p>Defina limites mensais por categoria</p>
+        </div>
+        <div class="header-actions">
+            <div class="date-navigator">
+                <button class="nav-btn" (click)="changeMonth(-1)">
+                    <lucide-icon name="ChevronLeft"></lucide-icon>
+                </button>
+                <span class="current-month">{{ currentMonthName() }}</span>
+                <button class="nav-btn" (click)="changeMonth(1)">
+                    <lucide-icon name="ChevronRight"></lucide-icon>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Info Box -->
+    <div class="info-box">
+        <div class="info-icon">
+            <lucide-icon name="Target"></lucide-icon>
+        </div>
+        <div class="info-content">
+            <h4>Como funciona?</h4>
+            <p>Defina um limite mensal para cada categoria de despesa. Acompanhe visualmente quanto você já gastou e
+                receba alertas quando estiver perto do limite.</p>
+        </div>
+    </div>
+
+    <div class="metas-grid">
+        @if (loading()) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+        </div>
+        } @else {
+        @if (metas().length === 0) {
+        <div class="empty-state">
+            <lucide-icon name="Target"></lucide-icon>
+            <p>Nenhuma categoria de despesa encontrada para definir metas.</p>
+        </div>
+        } @else {
+        @for (item of metas(); track item.categoriaId) {
+        <div class="meta-card">
+            <div class="meta-card-header">
+                <div class="category-header">
+                    <div class="category-icon">
+                        <lucide-icon name="TrendingDown"></lucide-icon>
+                    </div>
+                    <div class="category-details">
+                        <span class="category-name">{{ item.categoriaNome }}</span>
+                    </div>
+                </div>
+                @if (item.valorLimite > 0) {
+                <button class="icon-btn" (click)="openEditMetaModal(item)" title="Editar Meta">
+                    <lucide-icon name="Pencil"></lucide-icon>
+                </button>
+                }
+            </div>
+
+            <div class="meta-body">
+                @if (item.valorLimite > 0) {
+                <div class="meta-values">
+                    <span class="actual">{{ item.valorRealizado | currency:'BRL' }}</span>
+                    <span class="limit">de {{ item.valorLimite | currency:'BRL' }}</span>
+                </div>
+
+                <div class="progress-container">
+                    <div class="progress-bar" [style.width.%]="calculatePercentage(item)"
+                        [class.warning]="isWarning(item)" [class.danger]="isDanger(item)">
+                    </div>
+                </div>
+
+                <div class="meta-footer">
+                    @if (isDanger(item)) {
+                    <span class="status-msg danger">Limite atingido!</span>
+                    } @else if (isWarning(item)) {
+                    <span class="status-msg warning">Próximo ao limite.</span>
+                    } @else {
+                    <span class="status-msg success">Dentro da meta.</span>
+                    }
+                    <span class="percentage">{{ calculatePercentage(item) | number:'1.0-0' }}%</span>
+                </div>
+                } @else {
+                <div class="no-meta-state">
+                    <p>Gasto este mês: {{ item.valorRealizado | currency:'BRL' }}</p>
+                    <button class="btn-primary-mini" (click)="openEditMetaModal(item)">
+                        <lucide-icon name="Target"></lucide-icon>
+                        <span>Definir Meta</span>
+                    </button>
+                </div>
+                }
+            </div>
+        </div>
+        }
+        }
+        }
+    </div>
+
+    <!-- Modal Form -->
+    @if (showModal()) {
+    <div class="modal-overlay">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Definir Meta de Gastos</h2>
+                <button class="close-btn" (click)="closeModal()">
+                    <lucide-icon name="X"></lucide-icon>
+                </button>
+            </div>
+
+            <form (ngSubmit)="save()" #metaForm="ngForm">
+                <div class="form-group">
+                    <label>Categoria</label>
+                    <select name="categoria" [(ngModel)]="form.categoriaId" required disabled>
+                        <option [value]="0" disabled>Selecione uma categoria...</option>
+                        @for (cat of categorias(); track cat.id) {
+                        <option [value]="cat.id">{{ cat.nome }}</option>
+                        }
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Valor Limite Mensal</label>
+                    <input type="number" name="valor" [(ngModel)]="form.valorLimite" placeholder="0,00" step="0.01"
+                        required>
+                </div>
+
+                <div class="info-box-mini">
+                    <lucide-icon name="AlertCircle"></lucide-icon>
+                    <p>Esta meta será aplicada apenas para o mês de {{ currentMonthName() }}.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline" (click)="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar Meta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    }
+</div>

@@ -34,7 +34,10 @@ import {
   Search,
   Menu,
   BarChart2,
-  PieChart
+  PieChart,
+  RefreshCw,
+  Calendar,
+  Settings2
 } from 'lucide-angular';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth';
@@ -76,7 +79,10 @@ export const appConfig: ApplicationConfig = {
       Search,
       Menu,
       BarChart2,
-      PieChart
+      PieChart,
+      RefreshCw,
+      Calendar,
+      Settings2
     }))
   ]
 };
