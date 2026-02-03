@@ -38,9 +38,13 @@ try
     builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.IUsuarioRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.UsuarioRepository>();
     builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.ICategoriaRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.CategoriaRepository>();
     builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.ILancamentoRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.LancamentoRepository>();
+    builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.IRecorrenteRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.RecorrenteRepository>();
+    builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.IMetaRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.MetaRepository>();
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.IAuthService, ControleFinanceiro.Application.Services.AuthService>();
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.ICategoriaService, ControleFinanceiro.Application.Services.CategoriaService>();
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.ILancamentoService, ControleFinanceiro.Application.Services.LancamentoService>();
+    builder.Services.AddScoped<ControleFinanceiro.Application.Services.IRecorrenteService, ControleFinanceiro.Application.Services.RecorrenteService>();
+    builder.Services.AddScoped<ControleFinanceiro.Application.Services.IMetaService, ControleFinanceiro.Application.Services.MetaService>();
 
     // FluentValidation
     builder.Services.AddFluentValidationAutoValidation();
@@ -50,7 +54,6 @@ try
     var jwtSettings = builder.Configuration.GetSection("JwtSettings");
     var key = Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("Secret")!);
 
-    // Impedir que o .NET mapeie nomes de Claims padrão para URLs XML antigas
     System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
     builder.Services.AddAuthentication(x =>
@@ -77,7 +80,6 @@ try
     });
 
     builder.Services.AddControllers();
-    // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
     builder.Services.AddOpenApi();
 
     var app = builder.Build();

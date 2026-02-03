@@ -20,7 +20,6 @@ public class DatabaseInitializer
     {
         Log.Information("Iniciando a inicialização automática do banco de dados...");
 
-        // Garantir que o banco de dados exista antes de prosseguir
         EnsureDatabaseExists();
 
         using var connection = _connectionFactory.CreateConnection();
@@ -35,12 +34,10 @@ public class DatabaseInitializer
             );";
         connection.Execute(createHistoryTableSql);
 
-        // Localizar e carregar scripts de migração
         var scriptsPath = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Persistence", "Scripts");
         
         if (!Directory.Exists(scriptsPath) || !Directory.GetFiles(scriptsPath, "*.sql").Any())
         {
-            // Fallback para ambiente de desenvolvimento local
             scriptsPath = Path.Combine(Directory.GetCurrentDirectory(), "..", "ControleFinanceiro.Infrastructure", "Persistence", "Scripts");
         }
 
@@ -60,7 +57,6 @@ public class DatabaseInitializer
         {
             var fileName = Path.GetFileName(scriptPath);
             
-            // Verificar se migração já foi aplicada
             var alreadyApplied = connection.ExecuteScalar<int>(
                 "SELECT COUNT(1) FROM HistoricoMigracoes WHERE NomeArquivo = @fileName", 
                 new { fileName }) > 0;
