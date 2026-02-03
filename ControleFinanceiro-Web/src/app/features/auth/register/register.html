@@ -1,0 +1,79 @@
+<div class="auth-container">
+    <!-- Outside Header -->
+    <div class="auth-brand-header">
+        <div class="brand-logo">
+            <lucide-icon name="Wallet"></lucide-icon>
+        </div>
+        <div class="brand-text">
+            <h1 class="brand-title">FinançasPro</h1>
+            <p class="brand-subtitle">Controle financeiro pessoal</p>
+        </div>
+    </div>
+
+    <!-- Register Card -->
+    <div class="auth-card">
+        <div class="auth-card-body">
+            <h2 class="auth-welcome">Criar nova conta</h2>
+            <p class="auth-instruction">Comece sua jornada financeira com o pé direito</p>
+
+            <form class="auth-form" (submit)="onRegister()" novalidate>
+                <div class="auth-alert error" *ngIf="error">
+                    <lucide-icon name="AlertCircle" class="alert-icon"></lucide-icon>
+                    <span>{{ error }}</span>
+                </div>
+
+                <div class="auth-alert success" *ngIf="success">
+                    <lucide-icon name="CheckCircle" class="alert-icon"></lucide-icon>
+                    <span>{{ success }}</span>
+                </div>
+
+                <div class="form-group">
+                    <label>Nome Completo</label>
+                    <div class="input-container">
+                        <lucide-icon name="User" class="input-icon"></lucide-icon>
+                        <input type="text" name="nome" [(ngModel)]="nome" placeholder="Digite seu nome" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Usuário</label>
+                    <div class="input-container">
+                        <lucide-icon name="User" class="input-icon"></lucide-icon>
+                        <input type="text" name="username" [(ngModel)]="username" placeholder="usuário_exemplo"
+                            required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>E-mail</label>
+                    <div class="input-container">
+                        <lucide-icon name="Mail" class="input-icon"></lucide-icon>
+                        <input type="email" name="email" [(ngModel)]="email" placeholder="exemplo@email.com" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Senha</label>
+                    <div class="input-container">
+                        <lucide-icon name="Lock" class="input-icon"></lucide-icon>
+                        <input type="password" name="senha" [(ngModel)]="senha" placeholder="••••••••" required>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary" [disabled]="loading">
+                    <span *ngIf="!loading">Cadastrar</span>
+                    <span *ngIf="loading">Cadastrando...</span>
+                    <lucide-icon *ngIf="!loading" name="UserPlus"></lucide-icon>
+                </button>
+            </form>
+
+            <div class="auth-footer-links">
+                <span>Já possui uma conta? <a routerLink="/auth/login">Faça login</a></span>
+            </div>
+        </div>
+    </div>
+
+    <p class="auth-disclaimer">
+        Ao continuar, você concorda com nossos Termos de Uso e Política de Privacidade.
+    </p>
+</div>

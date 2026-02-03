@@ -1,0 +1,91 @@
+<div class="page-container">
+    <header class="page-header">
+        <div class="header-info">
+            <h1>Categorias</h1>
+            <p>Gerencie suas categorias de receitas e despesas</p>
+        </div>
+        <button class="btn btn-primary" (click)="openModal()">
+            <lucide-icon name="Plus"></lucide-icon>
+            <span>Nova Categoria</span>
+        </button>
+    </header>
+
+    <div class="loading-state" *ngIf="loading()">
+        <div class="spinner"></div>
+        <p>Carregando categorias...</p>
+    </div>
+
+    <div class="empty-state" *ngIf="!loading() && categorias().length === 0">
+        <lucide-icon name="Tags"></lucide-icon>
+        <h3>Nenhuma categoria encontrada</h3>
+        <p>Comece criando sua primeira categoria para organizar suas finanças.</p>
+        <button class="btn btn-secondary" (click)="openModal()">Criar Categoria</button>
+    </div>
+
+    <div class="grid-container" *ngIf="!loading() && categorias().length > 0">
+        <div class="categoria-card" *ngFor="let cat of categorias()">
+            <div class="card-icon" [class.receita]="cat.tipo === 'Receita'" [class.despesa]="cat.tipo === 'Despesa'">
+                <lucide-icon [name]="getIconForType(cat.tipo)"></lucide-icon>
+            </div>
+            <div class="card-info">
+                <h3>{{ cat.nome }}</h3>
+                <span class="badge" [class.badge-receita]="cat.tipo === 'Receita'"
+                    [class.badge-despesa]="cat.tipo === 'Despesa'">
+                    {{ cat.tipo }}
+                </span>
+            </div>
+            <div class="card-actions" *ngIf="!cat.isDefault">
+                <button class="action-btn edit" (click)="openModal(cat)" title="Editar">
+                    <lucide-icon name="Pencil"></lucide-icon>
+                </button>
+                <button class="action-btn delete" (click)="delete(cat.id)" title="Excluir">
+                    <lucide-icon name="Trash2"></lucide-icon>
+                </button>
+            </div>
+            <div class="card-actions default" *ngIf="cat.isDefault">
+                <span class="default-badge">Padrão</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" *ngIf="showModal()" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h2>{{ editMode() ? 'Editar Categoria' : 'Nova Categoria' }}</h2>
+            <button class="close-btn" (click)="closeModal()">
+                <lucide-icon name="X"></lucide-icon>
+            </button>
+        </header>
+
+        <form class="modal-form" (submit)="save()">
+            <div class="form-group">
+                <label>Nome da Categoria</label>
+                <input type="text" [(ngModel)]="form.nome" name="nome" placeholder="Ex: Alimentação, Salário..."
+                    required>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="tipo" [(ngModel)]="form.tipo" value="Receita">
+                        <div class="radio-box receita">Receita</div>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="tipo" [(ngModel)]="form.tipo" value="Despesa">
+                        <div class="radio-box despesa">Despesa</div>
+                    </label>
+                </div>
+            </div>
+
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary" [disabled]="!form.nome">
+                    {{ editMode() ? 'Salvar Alterações' : 'Criar Categoria' }}
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>

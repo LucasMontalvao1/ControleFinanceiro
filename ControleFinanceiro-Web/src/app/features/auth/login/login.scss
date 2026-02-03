@@ -1,0 +1,276 @@
+@use "variables" as *;
+
+.auth-container {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #030712; // Very dark background from the image
+    padding: 2rem;
+    color: white;
+}
+
+.auth-brand-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 2.5rem;
+
+    .brand-logo {
+        width: 3.5rem;
+        height: 3.5rem;
+        background-color: #3b82f6;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        lucide-icon {
+            width: 1.75rem;
+            height: 1.75rem;
+            color: white;
+        }
+    }
+
+    .brand-text {
+        .brand-title {
+            font-size: 1.75rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            margin: 0;
+        }
+
+        .brand-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+    }
+}
+
+.auth-card {
+    width: 100%;
+    max-width: 440px;
+    background-color: #0a0f1d; // Slightly lighter card background
+    border: 1px solid #1f2937;
+    border-radius: 1rem;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+}
+
+.auth-welcome {
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+.auth-instruction {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+    .auth-alert {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.875rem 1rem;
+        border-radius: 0.5rem;
+        font-size: 0.875rem;
+        font-weight: 500;
+        margin-bottom: 0.25rem;
+        animation: slideDown 0.3s ease-out;
+
+        &.error {
+            background-color: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #f87171;
+
+            .alert-icon {
+                width: 1.125rem;
+                height: 1.125rem;
+                flex-shrink: 0;
+            }
+        }
+    }
+
+    @keyframes slideDown {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+        }
+
+        .input-container {
+            position: relative;
+            background-color: #030712;
+            border: 1px solid #1f2937;
+            border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+
+            &:focus-within {
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 1px #3b82f6;
+            }
+
+            .input-icon {
+                position: absolute;
+                left: 0.75rem;
+                width: 1.125rem;
+                height: 1.125rem;
+                color: #64748b;
+            }
+
+            input {
+                width: 100%;
+                background: transparent;
+                border: none;
+                padding: 0.75rem 0.75rem 0.75rem 2.5rem;
+                color: white;
+                font-size: 0.875rem;
+
+                &:focus {
+                    outline: none;
+                }
+
+                &::placeholder {
+                    color: #475569;
+                }
+            }
+        }
+    }
+}
+
+.form-options {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.25rem;
+
+    .forgot-password {
+        font-size: 0.8125rem;
+        color: #3b82f6;
+        text-decoration: none;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.875rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    font-size: 0.9375rem;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+    width: 100%;
+
+    &.btn-primary {
+        background-color: #3b82f6;
+        color: white;
+        margin-top: 1rem;
+
+        &:hover {
+            background-color: #2563eb;
+        }
+
+        lucide-icon {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+
+    &.btn-google {
+        background-color: #030712;
+        color: #94a3b8;
+        border: 1px solid #1f2937;
+
+        &:hover {
+            background-color: #111827;
+            color: white;
+        }
+
+        lucide-icon {
+            width: 1.125rem;
+            height: 1.125rem;
+        }
+    }
+}
+
+.auth-divider {
+    display: flex;
+    align-items: center;
+    margin: 1.5rem 0;
+
+    &::before,
+    &::after {
+        content: "";
+        flex: 1;
+        height: 1px;
+        background-color: #1f2937;
+    }
+
+    span {
+        padding: 0 0.75rem;
+        font-size: 0.75rem;
+        color: #475569;
+        font-weight: 600;
+    }
+}
+
+.auth-footer-links {
+    text-align: center;
+    margin-top: 1.5rem;
+    font-size: 0.875rem;
+    color: #94a3b8;
+
+    a {
+        color: #3b82f6;
+        text-decoration: none;
+        font-weight: 600;
+
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+}
+
+.auth-disclaimer {
+    max-width: 400px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #475569;
+    line-height: 1.4;
+}

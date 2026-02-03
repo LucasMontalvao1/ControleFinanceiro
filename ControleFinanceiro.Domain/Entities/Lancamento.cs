@@ -9,6 +9,7 @@ public class Lancamento
     public string Tipo { get; set; } = string.Empty; // Entrada ou Saida
     public int UsuarioId { get; set; }
     public int CategoriaId { get; set; }
+    public string CategoriaNome { get; set; } = string.Empty;
     public DateTime CreatedAt { get; set; }
 
     public Lancamento()

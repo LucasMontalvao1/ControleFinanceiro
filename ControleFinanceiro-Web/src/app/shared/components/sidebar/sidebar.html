@@ -1,0 +1,48 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <div class="logo-box">
+      <lucide-icon name="Wallet"></lucide-icon>
+    </div>
+    <div class="brand-info">
+      <span class="brand-name">FinançasPro</span>
+      <span class="brand-subtitle">Controle financeiro</span>
+    </div>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-item">
+      <lucide-icon name="LayoutDashboard"></lucide-icon>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/app/lancamentos" routerLinkActive="active" class="nav-item">
+      <lucide-icon name="ArrowsUpFromLine"></lucide-icon>
+      <span>Transações</span>
+    </a>
+    <div class="nav-item disabled">
+      <lucide-icon name="Repeat"></lucide-icon>
+      <span>Recorrentes</span>
+    </div>
+    <div class="nav-item disabled">
+      <lucide-icon name="Target"></lucide-icon>
+      <span>Metas</span>
+    </div>
+    <a routerLink="/app/categorias" routerLinkActive="active" class="nav-item">
+      <lucide-icon name="Folder"></lucide-icon>
+      <span>Categorias</span>
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <button class="theme-toggle-btn" (click)="themeService.toggleTheme()">
+      <lucide-icon [name]="themeService.darkMode() ? 'Sun' : 'Moon'"></lucide-icon>
+      <span>{{ themeService.darkMode() ? 'Modo claro' : 'Modo escuro' }}</span>
+    </button>
+
+    <div class="user-profile">
+      <div class="user-avatar">
+        <lucide-icon name="User"></lucide-icon>
+      </div>
+      <div class="user-name-footer">{{ authService.currentUser() || 'Usuário' }}</div>
+    </div>
+  </div>
+</aside>

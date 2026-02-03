@@ -100,8 +100,6 @@ public class DatabaseInitializer
         var builder = new MySql.Data.MySqlClient.MySqlConnectionStringBuilder(connection.ConnectionString);
         var databaseName = builder.Database;
         
-        var databaseName = builder.Database;
-        
         // Conectar ao MySQL sem especificar database
         builder.Database = "";
         using var masterConnection = new MySql.Data.MySqlClient.MySqlConnection(builder.ConnectionString);

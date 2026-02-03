@@ -1,0 +1,349 @@
+@use "variables" as *;
+
+.page-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2.5rem;
+
+    .header-info {
+        h1 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.025em;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    }
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.categoria-card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1rem;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    position: relative;
+    transition: var(--transition);
+
+    &:hover {
+        transform: translateY(-2px);
+        border-color: #3b82f6;
+        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.3);
+    }
+
+    .card-icon {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        &.receita {
+            background-color: rgba(34, 197, 94, 0.1);
+            color: #4ade80;
+        }
+
+        &.despesa {
+            background-color: rgba(239, 68, 68, 0.1);
+            color: #f87171;
+        }
+
+        lucide-icon {
+            width: 1.5rem;
+            height: 1.5rem;
+        }
+    }
+
+    .card-info {
+        flex: 1;
+
+        h3 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            text-transform: uppercase;
+
+            &-receita {
+                background-color: rgba(34, 197, 94, 0.2);
+                color: #4ade80;
+            }
+
+            &-despesa {
+                background-color: rgba(239, 68, 68, 0.2);
+                color: #f87171;
+            }
+        }
+    }
+
+    .card-actions {
+        display: flex;
+        gap: 0.5rem;
+        opacity: 0;
+        transition: var(--transition);
+
+        &.default {
+            opacity: 1;
+
+            .default-badge {
+                font-size: 0.7rem;
+                color: var(--text-secondary);
+                font-weight: 600;
+                border: 1px solid var(--border-color);
+                padding: 0.125rem 0.375rem;
+                border-radius: 4px;
+            }
+        }
+    }
+
+    &:hover .card-actions:not(.default) {
+        opacity: 1;
+    }
+}
+
+.action-btn {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    background-color: var(--bg-card);
+    color: var(--text-secondary);
+    transition: var(--transition);
+
+    &:hover {
+        color: var(--text-primary);
+    }
+
+    &.edit:hover {
+        background-color: #3b82f6;
+    }
+
+    &.delete:hover {
+        background-color: #ef4444;
+    }
+
+    lucide-icon {
+        width: 1rem;
+        height: 1rem;
+    }
+}
+
+/* Modal Styling */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.modal-content {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: 1.5rem;
+    width: 100%;
+    max-width: 480px;
+    padding: 2rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    animation: zoomIn 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+
+    h2 {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+
+    .close-btn {
+        background: transparent;
+        border: none;
+        color: #94a3b8;
+        cursor: pointer;
+
+        &:hover {
+            color: white;
+        }
+    }
+}
+
+.modal-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        label {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #cbd5e1;
+        }
+
+        input {
+            background-color: var(--bg-dark);
+            border: 1px solid var(--border-color);
+            border-radius: 0.75rem;
+            padding: 0.875rem 1rem;
+            color: var(--text-primary);
+            width: 100%;
+            transition: var(--transition);
+
+            &:focus {
+                outline: none;
+                border-color: #3b82f6;
+                box-shadow: 0 0 0 1px #3b82f6;
+            }
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 1rem;
+
+            .radio-item {
+                flex: 1;
+                cursor: pointer;
+
+                input {
+                    display: none;
+                }
+
+                .radio-box {
+                    text-align: center;
+                    padding: 0.75rem;
+                    border-radius: 0.75rem;
+                    border: 1px solid var(--border-color);
+                    background-color: var(--bg-dark);
+                    color: var(--text-secondary);
+                    font-weight: 600;
+                    transition: var(--transition);
+
+                    &.receita {
+                        &:hover {
+                            border-color: #22c55e;
+                            color: #22c55e;
+                        }
+                    }
+
+                    &.despesa {
+                        &:hover {
+                            border-color: #ef4444;
+                            color: #ef4444;
+                        }
+                    }
+                }
+
+                input:checked+.radio-box.receita {
+                    background-color: rgba(34, 197, 94, 0.1);
+                    border-color: #22c55e;
+                    color: #22c55e;
+                }
+
+                input:checked+.radio-box.despesa {
+                    background-color: rgba(239, 68, 68, 0.1);
+                    border-color: #ef4444;
+                    color: #ef4444;
+                }
+            }
+        }
+    }
+}
+
+.modal-footer {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+
+    .btn {
+        flex: 1;
+        padding: 0.875rem;
+        border-radius: 0.75rem;
+        font-weight: 700;
+        cursor: pointer;
+        border: none;
+        transition: var(--transition);
+
+        &.btn-primary {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        &.btn-secondary {
+            background-color: var(--border-color);
+            color: var(--text-secondary);
+        }
+
+        &:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomIn {
+    from {
+        opacity: 0;
+        transform: scale(0.95);
+    }
+
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}

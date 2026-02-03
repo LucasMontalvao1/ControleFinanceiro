@@ -71,7 +71,6 @@ try
             ValidIssuer = jwtSettings.GetValue<string>("Issuer"),
             ValidAudience = jwtSettings.GetValue<string>("Audience"),
             IssuerSigningKey = new SymmetricSecurityKey(key),
-            IssuerSigningKey = new SymmetricSecurityKey(key),
             NameClaimType = "unique_name", 
             RoleClaimType = "role" 
         };

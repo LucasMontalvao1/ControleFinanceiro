@@ -1,0 +1,17 @@
+<div class="layout-container" [class.mobile-menu-open]="isMobileMenuOpen()">
+    <!-- Sidebar -->
+    <app-sidebar [class.open]="isMobileMenuOpen()"></app-sidebar>
+
+    <!-- Overlay for mobile -->
+    <div class="mobile-overlay" (click)="isMobileMenuOpen.set(false)" *ngIf="isMobileMenuOpen()"></div>
+
+    <div class="main-wrapper">
+        <!-- Header passes the toggle -->
+        <app-header (toggleMenu)="toggleMobileMenu()"></app-header>
+
+        <!-- Content Area -->
+        <main class="content-area">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+</div>

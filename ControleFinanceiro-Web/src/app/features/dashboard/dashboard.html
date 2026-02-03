@@ -1,0 +1,166 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-info">
+            <h1>Dashboard</h1>
+            <p>Visão geral das suas finanças</p>
+        </div>
+
+        <div class="date-selector">
+            <button type="button" class="nav-btn" (click)="prevMonth()"><lucide-icon
+                    name="ChevronLeft"></lucide-icon></button>
+            <span class="current-date">{{ formattedMonth() }}</span>
+            <button type="button" class="nav-btn" (click)="nextMonth()"><lucide-icon
+                    name="ChevronRight"></lucide-icon></button>
+        </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+        <div class="stat-card income">
+            <div class="stat-info">
+                <span class="label">Total de Entradas</span>
+                <div class="value">{{ summary()?.totalEntradas || 0 | currency:'BRL':'symbol':'1.2-2' }}</div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="TrendingUp"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="stat-card expense">
+            <div class="stat-info">
+                <span class="label">Total de Saídas</span>
+                <div class="value">{{ summary()?.totalSaidas || 0 | currency:'BRL':'symbol':'1.2-2' }}</div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="TrendingDown"></lucide-icon>
+            </div>
+        </div>
+
+        <div class="stat-card balance">
+            <div class="stat-info">
+                <span class="label">Saldo Atual</span>
+                <div class="value" [class.negative]="(summary()?.saldo || 0) < 0">
+                    {{ summary()?.saldo || 0 | currency:'BRL':'symbol':'1.2-2' }}
+                </div>
+            </div>
+            <div class="stat-icon">
+                <lucide-icon name="Wallet"></lucide-icon>
+            </div>
+        </div>
+    </div>
+
+    <div class="main-grid">
+        <!-- Daily Evolution -->
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Evolução Diária (Este Mês)</h3>
+            </div>
+            <div class="chart-container">
+                @if (loading()) { <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                </div> }
+                @else if (hasData()) {
+                <apx-chart [series]="dailyTrendChartOptions.series" [chart]="dailyTrendChartOptions.chart"
+                    [xaxis]="dailyTrendChartOptions.xaxis" [yaxis]="dailyTrendChartOptions.yaxis"
+                    [plotOptions]="dailyTrendChartOptions.plotOptions" [tooltip]="dailyTrendChartOptions.tooltip"
+                    [dataLabels]="dailyTrendChartOptions.dataLabels" [grid]="dailyTrendChartOptions.grid"></apx-chart>
+                } @else { <div class="chart-empty-state"><lucide-icon name="BarChart2"></lucide-icon>
+                    <p>Sem dados diários no mês</p>
+                </div> }
+            </div>
+        </div>
+
+        <!-- Expenses by Category -->
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Gastos por Categoria</h3>
+            </div>
+            <div class="chart-container">
+                @if (loading()) { <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                </div> }
+                @else if (summary()?.totalSaidas ?? 0 > 0) {
+                <apx-chart [series]="categoryChartOptions.series" [chart]="categoryChartOptions.chart"
+                    [labels]="categoryChartOptions.labels" [colors]="categoryChartOptions.colors"
+                    [plotOptions]="categoryChartOptions.plotOptions" [legend]="categoryChartOptions.legend"
+                    [dataLabels]="categoryChartOptions.dataLabels" [tooltip]="categoryChartOptions.tooltip"></apx-chart>
+                } @else { <div class="chart-empty-state"><lucide-icon name="PieChart"></lucide-icon>
+                    <p>Sem gastos registrados</p>
+                </div> }
+            </div>
+        </div>
+
+        <!-- Historical Trend Bar (6 Months) -->
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Entradas x Saídas (6 Meses)</h3>
+            </div>
+            <div class="chart-container">
+                @if (loading()) { <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                </div> }
+                @else if (summary()?.evolucaoAnual?.length) {
+                <apx-chart [series]="yearlyTrendChartOptions.series" [chart]="yearlyTrendChartOptions.chart"
+                    [xaxis]="yearlyTrendChartOptions.xaxis" [yaxis]="yearlyTrendChartOptions.yaxis"
+                    [plotOptions]="yearlyTrendChartOptions.plotOptions" [tooltip]="yearlyTrendChartOptions.tooltip"
+                    [dataLabels]="yearlyTrendChartOptions.dataLabels" [grid]="yearlyTrendChartOptions.grid"></apx-chart>
+                } @else { <div class="chart-empty-state"><lucide-icon name="Activity"></lucide-icon>
+                    <p>Sem histórico de 6 meses</p>
+                </div> }
+            </div>
+        </div>
+
+        <!-- Historical Balance Evolution -->
+        <div class="content-card">
+            <div class="card-header">
+                <h3>Evolução do Saldo (6 Meses)</h3>
+            </div>
+            <div class="chart-container">
+                @if (loading()) { <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                </div> }
+                @else if (summary()?.evolucaoAnual?.length) {
+                <apx-chart [series]="yearlyBalanceChartOptions.series" [chart]="yearlyBalanceChartOptions.chart"
+                    [xaxis]="yearlyBalanceChartOptions.xaxis" [yaxis]="yearlyBalanceChartOptions.yaxis"
+                    [stroke]="yearlyBalanceChartOptions.stroke" [tooltip]="yearlyBalanceChartOptions.tooltip"
+                    [dataLabels]="yearlyBalanceChartOptions.dataLabels" [fill]="yearlyBalanceChartOptions.fill"
+                    [grid]="yearlyBalanceChartOptions.grid"></apx-chart>
+                } @else { <div class="chart-empty-state"><lucide-icon name="Timeline"></lucide-icon>
+                    <p>Acompanhe seu histórico</p>
+                </div> }
+            </div>
+        </div>
+
+        <!-- Recent Transactions List -->
+        <div class="content-card full-width recent-transactions">
+            <div class="card-header">
+                <h3>Transações Recentes</h3>
+                <a routerLink="/app/lancamentos" class="see-all">Ver todas</a>
+            </div>
+
+            <div class="transactions-list">
+                @if (loading()) { <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                </div> }
+                @else if (summary()?.lancamentosRecentes?.length) {
+                @for (item of summary()?.lancamentosRecentes; track item.id) {
+                <div class="transaction-item">
+                    <div class="item-icon" [class.receita]="item.tipo === 'Receita'">
+                        <lucide-icon [name]="item.tipo === 'Receita' ? 'TrendingUp' : 'TrendingDown'"></lucide-icon>
+                    </div>
+                    <div class="item-details">
+                        <span class="desc">{{ item.descricao }}</span>
+                        <span class="meta">{{ item.categoriaNome }} • {{ item.data | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                    <div class="item-value" [class.receita]="item.tipo === 'Receita'">
+                        {{ item.tipo === 'Receita' ? '+' : '-' }} {{ item.valor | currency:'BRL':'symbol':'1.2-2' }}
+                    </div>
+                </div>
+                }
+                } @else {
+                <div class="empty-list">Nenhuma transação recente encontrada.</div>
+                }
+            </div>
+        </div>
+    </div>
+</div>

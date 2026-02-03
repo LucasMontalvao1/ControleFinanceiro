@@ -1,0 +1,69 @@
+@use "variables" as *;
+
+:root {
+    --bg-dark: #{$bg-dark-light};
+    --bg-card: #{$bg-card-light};
+    --bg-sidebar: #{$bg-sidebar-light};
+    --border-color: #{$border-light};
+    --text-primary: #{$text-primary-light};
+    --text-secondary: #{$text-secondary-light};
+    --accent-blue: #{$accent-blue};
+    --accent-green: #{$accent-green};
+    --accent-red: #{$accent-red};
+    --accent-purple: #{$accent-purple};
+    --transition: #{$transition};
+}
+
+.dark {
+    --bg-dark: #{$bg-dark-dark};
+    --bg-card: #{$bg-card-dark};
+    --bg-sidebar: #{$bg-sidebar-dark};
+    --border-color: #{$border-dark};
+    --text-primary: #{$text-primary-dark};
+    --text-secondary: #{$text-secondary-dark};
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    transition: background-color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    min-height: 100vh;
+    line-height: 1.5;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.75rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    border: none;
+
+    &-primary {
+        background-color: var(--accent-blue);
+        color: white;
+
+        &:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+    }
+}

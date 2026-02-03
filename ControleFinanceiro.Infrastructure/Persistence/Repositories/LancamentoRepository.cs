@@ -50,10 +50,44 @@ public class LancamentoRepository : ILancamentoRepository
     {
         var sql = _sqlProvider.GetSql("Lancamento", "GetSummary");
         var result = await _session.Connection.QueryFirstOrDefaultAsync<dynamic>(sql, new { UsuarioId = usuarioId, Start = start, End = end });
-        
+
         return (
             (decimal)(result?.TotalEntradas ?? 0m),
             (decimal)(result?.TotalSaidas ?? 0m)
         );
+    }
+
+    public async Task<IEnumerable<(string Categoria, decimal Valor)>> GetExpensesByCategoryAsync(int usuarioId, DateTime start, DateTime end)
+    {
+        var sql = _sqlProvider.GetSql("Lancamento", "GetExpensesByCategory");
+        var results = await _session.Connection.QueryAsync<dynamic>(sql, new { UsuarioId = usuarioId, Start = start, End = end });
+        return results.Select(r => ((string)r.Categoria, (decimal)r.Valor));
+    }
+
+    public async Task<IEnumerable<(DateTime Data, decimal Entradas, decimal Saidas)>> GetMonthlyEvolutionAsync(int usuarioId, DateTime start, DateTime end)
+    {
+        var sql = _sqlProvider.GetSql("Lancamento", "GetMonthlyEvolution");
+        var results = await _session.Connection.QueryAsync<dynamic>(sql, new { UsuarioId = usuarioId, Start = start, End = end });
+        return results.Select(r => ((DateTime)r.Data, (decimal)r.Entradas, (decimal)r.Saidas));
+    }
+
+    public async Task<IEnumerable<(string Mes, decimal Entradas, decimal Saidas, decimal Saldo)>> GetYearlyEvolutionAsync(int usuarioId, DateTime end)
+    {
+        var sql = _sqlProvider.GetSql("Lancamento", "GetYearlyEvolution");
+        var results = await _session.Connection.QueryAsync<dynamic>(sql, new { UsuarioId = usuarioId, End = end });
+        return results.Select(r => ((string)r.Mes, (decimal)r.Entradas, (decimal)r.Saidas, (decimal)r.Saldo));
+    }
+
+    public async Task<IEnumerable<Lancamento>> GetRecentAsync(int usuarioId, int take)
+    {
+        const string sql = @"
+            SELECT l.*, c.Nome as CategoriaNome 
+            FROM Lancamentos l
+            INNER JOIN Categorias c ON l.CategoriaId = c.Id
+            WHERE l.UsuarioId = @UsuarioId
+            ORDER BY l.Data DESC, l.Id DESC
+            LIMIT @Take";
+        
+        return await _session.Connection.QueryAsync<Lancamento>(sql, new { UsuarioId = usuarioId, Take = take });
     }
 }

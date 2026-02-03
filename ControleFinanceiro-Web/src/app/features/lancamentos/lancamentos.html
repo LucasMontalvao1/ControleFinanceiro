@@ -1,0 +1,146 @@
+<div class="page-container">
+    <div class="page-header">
+        <div class="header-info">
+            <h1>Transações</h1>
+            <p>Gerencie suas receitas e despesas</p>
+        </div>
+
+        <div class="header-actions">
+            <div class="date-selector">
+                <button type="button" class="nav-btn" (click)="prevMonth()">
+                    <lucide-icon name="ChevronLeft"></lucide-icon>
+                </button>
+                <span class="current-date">{{ formattedMonth() }}</span>
+                <button type="button" class="nav-btn" (click)="nextMonth()">
+                    <lucide-icon name="ChevronRight"></lucide-icon>
+                </button>
+            </div>
+
+            <button type="button" class="btn btn-export">
+                <lucide-icon name="Download"></lucide-icon>
+                <span>Exportar</span>
+            </button>
+
+            <button type="button" class="btn btn-primary" (click)="openModal()">
+                <lucide-icon name="Plus"></lucide-icon>
+                <span>Nova Transação</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Search Bar -->
+    <div class="search-bar">
+        <div class="search-input-wrapper">
+            <lucide-icon name="Search" class="search-icon"></lucide-icon>
+            <input type="text" placeholder="Buscar por descrição..." [ngModel]="searchTerm()"
+                (ngModelChange)="searchTerm.set($event)">
+        </div>
+    </div>
+
+    <!-- Content Table/Grid -->
+    <div class="content-card">
+        @if (loading()) {
+        <div class="loading-state">
+            <div class="spinner"></div>
+            <p>Carregando transações...</p>
+        </div>
+        } @else if (filteredLancamentos().length === 0) {
+        <div class="empty-state">
+            <lucide-icon name="ArrowLeftRight" class="empty-icon"></lucide-icon>
+            <p>Nenhuma transação neste mês</p>
+            <button type="button" class="btn btn-secondary" (click)="openModal()">Adicionar Lançamento</button>
+        </div>
+        } @else {
+        <div class="transactions-list">
+            <div class="transaction-item" *ngFor="let t of filteredLancamentos()" (click)="openModal(t)">
+                <div class="t-icon" [class.receita]="t.tipo === 'Receita'" [class.despesa]="t.tipo === 'Despesa'">
+                    <lucide-icon [name]="t.tipo === 'Receita' ? 'TrendingUp' : 'TrendingDown'"></lucide-icon>
+                </div>
+                <div class="t-info">
+                    <span class="t-desc">{{ t.descricao }}</span>
+                    <div class="t-meta">
+                        <span class="t-cat">{{ t.categoriaNome }}</span>
+                        <span class="t-dot">•</span>
+                        <span class="t-date">{{ t.data | date:'dd/MM/yyyy' }}</span>
+                    </div>
+                </div>
+                <div class="t-value" [class.receita]="t.tipo === 'Receita'" [class.despesa]="t.tipo === 'Despesa'">
+                    {{ t.tipo === 'Receita' ? '+' : '-' }} R$ {{ t.valor | number:'1.2-2' }}
+                </div>
+            </div>
+        </div>
+        }
+    </div>
+</div>
+
+<!-- Modal de Cadastro/Edição -->
+<div class="modal-overlay" *ngIf="showModal()" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <h2>{{ editMode() ? 'Editar Transação' : 'Nova Transação' }}</h2>
+            <button type="button" class="close-btn" (click)="closeModal()">
+                <lucide-icon name="X"></lucide-icon>
+            </button>
+        </header>
+
+        <form class="modal-form" (submit)="save(); $event.preventDefault()">
+            <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" [(ngModel)]="form.descricao" name="descricao" placeholder="Ex: Aluguel, Salário..."
+                    required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Valor</label>
+                    <input type="number" [(ngModel)]="form.valor" name="valor" step="0.01" placeholder="0,00" required>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" [(ngModel)]="form.data" name="data" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Tipo</label>
+                <div class="radio-group">
+                    <label class="radio-item">
+                        <input type="radio" name="tipo" [ngModel]="selectedTipo()"
+                            (ngModelChange)="onTipoChange($event)" value="Receita">
+                        <div class="radio-box receita">Receita</div>
+                    </label>
+                    <label class="radio-item">
+                        <input type="radio" name="tipo" [ngModel]="selectedTipo()"
+                            (ngModelChange)="onTipoChange($event)" value="Despesa">
+                        <div class="radio-box despesa">Despesa</div>
+                    </label>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Categoria</label>
+                <select [(ngModel)]="form.categoriaId" name="categoriaId" required>
+                    <option [value]="0" disabled>Selecione uma categoria...</option>
+                    <option *ngFor="let cat of filteredCategorias()" [value]="cat.id">
+                        {{ cat.nome }}
+                    </option>
+                </select>
+                @if (filteredCategorias().length === 0) {
+                <span class="warning-text">Nenhuma categoria de {{ selectedTipo().toLowerCase() }} cadastrada.</span>
+                }
+            </div>
+
+            <footer class="modal-footer">
+                @if (editMode()) {
+                <button type="button" class="btn btn-danger" (click)="delete(editingId()!)">Excluir</button>
+                }
+                <div class="spacer"></div>
+                <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancelar</button>
+                <button type="submit" class="btn btn-primary"
+                    [disabled]="!form.descricao || form.valor <= 0 || !form.categoriaId">
+                    {{ editMode() ? 'Salvar Alterações' : 'Confirmar Lançamento' }}
+                </button>
+            </footer>
+        </form>
+    </div>
+</div>

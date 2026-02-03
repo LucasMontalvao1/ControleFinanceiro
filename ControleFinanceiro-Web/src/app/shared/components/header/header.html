@@ -1,0 +1,22 @@
+<header class="header">
+    <div class="left-section">
+        <button class="menu-toggle-btn" (click)="toggleMenu.emit()">
+            <lucide-icon name="Menu"></lucide-icon>
+        </button>
+        <div class="page-title">
+            Dashboard
+        </div>
+    </div>
+
+    <div class="header-actions">
+        <div class="user-menu">
+            <div class="user-info-top">
+                <span class="user-display">{{ authService.currentUser() || 'Usuário' }}</span>
+                <button class="logout-link" (click)="logout()">Sair</button>
+            </div>
+            <div class="avatar-circle">
+                <lucide-icon name="User" class="avatar-icon"></lucide-icon>
+            </div>
+        </div>
+    </div>
+</header>

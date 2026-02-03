@@ -127,12 +127,26 @@ public class LancamentoService : ILancamentoService
         var startDate = start ?? new DateTime(DateTime.UtcNow.Year, DateTime.UtcNow.Month, 1);
         var endDate = end ?? startDate.AddMonths(1).AddDays(-1);
 
-        var summary = await _lancamentoRepository.GetSummaryAsync(usuarioId, startDate, endDate);
+        var (totalEntradas, totalSaidas) = await _lancamentoRepository.GetSummaryAsync(usuarioId, startDate, endDate);
         
-        return Result<DashboardSummaryResponse>.Ok(new DashboardSummaryResponse(
-            summary.TotalEntradas,
-            summary.TotalSaidas,
-            summary.TotalEntradas - summary.TotalSaidas
-        ));
+        var catResults = await _lancamentoRepository.GetExpensesByCategoryAsync(usuarioId, startDate, endDate);
+        var trendResults = await _lancamentoRepository.GetMonthlyEvolutionAsync(usuarioId, startDate, endDate);
+        var yearlyResults = await _lancamentoRepository.GetYearlyEvolutionAsync(usuarioId, endDate);
+        var recentTransactions = await _lancamentoRepository.GetRecentAsync(usuarioId, 5);
+
+        var response = new DashboardSummaryResponse(
+            totalEntradas,
+            totalSaidas,
+            totalEntradas - totalSaidas,
+            catResults.Select(c => new CategoriaGraficoResponse(c.Categoria, c.Valor)),
+            trendResults.Select(t => new EvolucaoDiariaResponse(t.Data, t.Entradas, t.Saidas)),
+            yearlyResults.Select(y => new EvolucaoMensalGraficoResponse(y.Mes, y.Entradas, y.Saidas, y.Saldo)),
+            recentTransactions.Select(l => new LancamentoResponse(
+                l.Id, l.Descricao, l.Valor, l.Data, 
+                l.Tipo == "Entrada" ? "Receita" : "Despesa", // Map back to Frontend terminology
+                l.CategoriaId, l.CategoriaNome))
+        );
+        
+        return Result<DashboardSummaryResponse>.Ok(response);
     }
 }
