@@ -1,0 +1,38 @@
+services:
+  # Backend (.NET API)
+  - type: web
+    name: controle-financeiro-api
+    env: docker
+    plan: free
+    region: oregon
+    buildCommand: docker build -t controle-financeiro-api .
+    startCommand: ./entrypoint.sh # Docker handles entrypoint
+    envVars:
+      - key: ASPNETCORE_ENVIRONMENT
+        value: Production
+      - key: DatabaseSettings__ConnectionString
+        sync: false # User will input this in Render Dashboard
+
+  # Frontend (Angular)
+  - type: static
+    name: controle-financeiro-web
+    env: static
+    plan: free
+    region: oregon
+    rootDir: ControleFinanceiro-Web
+    buildCommand: npm install && sed -i "s|API_URL_PLACEHOLDER|$API_URL|g" src/environments/environment.prod.ts && npm run build
+    staticPublishPath: dist/controle-financeiro-web/browser
+    headers:
+      - path: /*
+        name: Cache-Control
+        value: no-cache
+    routes:
+      - type: rewrite
+        source: /**
+        destination: /index.html
+    envVars:
+      - key: API_URL
+        fromService:
+          type: web
+          name: controle-financeiro-api
+          property: url

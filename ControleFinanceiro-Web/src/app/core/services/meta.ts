@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -20,7 +21,7 @@ export interface MetaResponse extends MetaRequest {
 })
 export class MetaService {
     private http = inject(HttpClient);
-    private apiUrl = 'https://localhost:7058/api/metas';
+    private apiUrl = `${environment.apiUrl}/metas`;
 
     getAll(mes: number, ano: number): Observable<MetaResponse[]> {
         return this.http.get<MetaResponse[]>(`${this.apiUrl}/${mes}/${ano}`);

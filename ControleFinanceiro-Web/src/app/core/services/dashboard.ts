@@ -1,4 +1,5 @@
-import { Injectable, inject } from '@angular/core';
+import { Injectable, inject, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -25,7 +26,7 @@ export interface DashboardSummary {
 })
 export class DashboardService {
     private http = inject(HttpClient);
-    private apiUrl = 'https://localhost:7058/api/dashboard';
+    private apiUrl = `${environment.apiUrl}/dashboard`;
 
     getSummary(start?: string, end?: string): Observable<DashboardSummary> {
         let params: any = {};

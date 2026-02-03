@@ -1,4 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
@@ -19,7 +20,7 @@ export interface AuthResponse {
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-  private apiUrl = 'https://localhost:7058/api/auth';
+  private apiUrl = `${environment.apiUrl}/auth`;
 
   public currentUser = signal<string | null>(null);
   public isAuthenticated = signal<boolean>(false);

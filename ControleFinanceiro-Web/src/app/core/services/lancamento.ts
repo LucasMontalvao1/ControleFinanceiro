@@ -1,4 +1,5 @@
 import { Injectable, inject } from '@angular/core';
+import { environment } from '../../../environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -25,7 +26,7 @@ export interface LancamentoResponse {
 })
 export class LancamentoService {
     private http = inject(HttpClient);
-    private apiUrl = 'https://localhost:7058/api/lancamentos';
+    private apiUrl = `${environment.apiUrl}/lancamentos`;
 
     getAll(start?: string, end?: string): Observable<LancamentoResponse[]> {
         let params: any = {};
