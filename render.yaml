@@ -18,7 +18,7 @@ services:
     env: static
     rootDir: ControleFinanceiro-Web
     buildCommand: npm install && sed -i "s|API_URL_PLACEHOLDER|https://$API_URL|g" src/environments/environment.prod.ts && npm run build
-    staticPublishPath: dist/ControleFinanceiro-Web
+    staticPublishPath: dist/ControleFinanceiro-Web/browser
     headers:
       - path: /*
         name: Cache-Control
