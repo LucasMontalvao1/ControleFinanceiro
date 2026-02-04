@@ -21,7 +21,8 @@ public class LancamentosController : ControllerBase
     private int GetUsuarioId()
     {
         var claim = User.FindFirst(ClaimTypes.NameIdentifier);
-        return int.Parse(claim?.Value ?? "0");
+        if (claim == null || string.IsNullOrEmpty(claim.Value)) return 0;
+        return int.Parse(claim.Value);
     }
 
     [HttpGet]

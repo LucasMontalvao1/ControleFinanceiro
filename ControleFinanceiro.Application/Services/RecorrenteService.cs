@@ -94,7 +94,7 @@ public class RecorrenteService : IRecorrenteService
         
         var idsJaAplicados = lancamentosExistentes
             .Where(l => l.RecorrenteId.HasValue)
-            .Select(l => l.RecorrenteId.Value)
+            .Select(l => l.RecorrenteId!.Value)
             .Distinct()
             .ToHashSet();
 
