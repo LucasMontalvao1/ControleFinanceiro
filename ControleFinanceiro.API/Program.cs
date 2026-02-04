@@ -2,7 +2,6 @@ using Serilog;
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
-using Scalar.AspNetCore;
 using FluentValidation;
 using FluentValidation.AspNetCore;
 
@@ -80,7 +79,9 @@ try
     });
 
     builder.Services.AddControllers();
-    builder.Services.AddOpenApi();
+    // Swagger/OpenAPI setup for .NET 8
+    builder.Services.AddEndpointsApiExplorer();
+    builder.Services.AddSwaggerGen();
 
     var app = builder.Build();
 
@@ -95,11 +96,9 @@ try
     app.UseMiddleware<ControleFinanceiro.API.Middleware.GlobalErrorHandlingMiddleware>();
 
     // Configure the HTTP request pipeline.
-    if (app.Environment.IsDevelopment())
-    {
-        app.MapOpenApi();
-        app.MapScalarApiReference();
-    }
+    // Enable Swagger in ALL environments for Render testing
+    app.UseSwagger();
+    app.UseSwaggerUI();
 
     app.UseCors("DefaultPolicy");
     app.UseHttpsRedirection();
