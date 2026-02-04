@@ -14,7 +14,7 @@ services:
         sync: false # User will input this in Render Dashboard
 
   # Frontend (Angular)
-  - type: static
+  - type: web
     name: controle-financeiro-web
     env: static
     plan: free
