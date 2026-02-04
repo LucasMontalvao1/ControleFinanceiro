@@ -22,7 +22,7 @@ export interface RecorrenteResponse extends RecorrenteRequest {
 })
 export class RecorrenteService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/recorrentes`;
+    private apiUrl = `${environment.apiUrl}/api/recorrentes`;
 
     getAll(): Observable<RecorrenteResponse[]> {
         return this.http.get<RecorrenteResponse[]>(this.apiUrl);

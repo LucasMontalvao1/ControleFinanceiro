@@ -20,7 +20,7 @@ export interface CategoriaResponse {
 })
 export class CategoriaService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/categorias`;
+    private apiUrl = `${environment.apiUrl}/api/categorias`;
 
     getAll(): Observable<CategoriaResponse[]> {
         return this.http.get<CategoriaResponse[]>(this.apiUrl);

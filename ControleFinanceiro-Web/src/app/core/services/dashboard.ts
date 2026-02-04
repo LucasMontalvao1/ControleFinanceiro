@@ -26,7 +26,7 @@ export interface DashboardSummary {
 })
 export class DashboardService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/dashboard`;
+    private apiUrl = `${environment.apiUrl}/api/dashboard`;
 
     getSummary(start?: string, end?: string): Observable<DashboardSummary> {
         let params: any = {};
