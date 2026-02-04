@@ -9,7 +9,7 @@ services:
     envVars:
       - key: ASPNETCORE_ENVIRONMENT
         value: Production
-      - key: DatabaseSettings__ConnectionString
+      - key: ConnectionStrings__DefaultConnection
         sync: false 
 
   # Frontend (Angular)
