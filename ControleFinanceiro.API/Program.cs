@@ -106,6 +106,9 @@ try
     app.UseAuthentication();
     app.UseAuthorization();
 
+    // Health check endpoint
+    app.MapGet("/", () => Results.Ok(new { status = "healthy", service = "ControleFinanceiro API" }));
+
     app.MapControllers();
 
     app.Run();
