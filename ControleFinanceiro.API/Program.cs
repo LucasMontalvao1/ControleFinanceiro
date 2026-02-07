@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using FluentValidation;
 using FluentValidation.AspNetCore;
+using Scalar.AspNetCore;
 
 Log.Logger = new LoggerConfiguration()
     .WriteTo.Console()
@@ -49,9 +50,11 @@ try
     builder.Services.AddFluentValidationAutoValidation();
     builder.Services.AddValidatorsFromAssemblyContaining<ControleFinanceiro.Application.Validators.RegisterRequestValidator>();
 
-    // Configuração JWT
-    var jwtSettings = builder.Configuration.GetSection("JwtSettings");
-    var key = Encoding.UTF8.GetBytes(jwtSettings.GetValue<string>("Secret")!);
+    // Configuração JWT Options
+    var jwtSection = builder.Configuration.GetSection("JwtSettings");
+    builder.Services.Configure<ControleFinanceiro.Application.Configuration.JwtSettings>(jwtSection);
+    var jwtSettings = jwtSection.Get<ControleFinanceiro.Application.Configuration.JwtSettings>();
+    var key = Encoding.UTF8.GetBytes(jwtSettings?.Secret ?? throw new InvalidOperationException("JWT Secret is missing"));
 
     System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
@@ -70,8 +73,8 @@ try
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidIssuer = jwtSettings.GetValue<string>("Issuer"),
-            ValidAudience = jwtSettings.GetValue<string>("Audience"),
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
             IssuerSigningKey = new SymmetricSecurityKey(key),
             NameClaimType = "unique_name", 
             RoleClaimType = "role" 
@@ -99,6 +102,15 @@ try
     // Enable Swagger in ALL environments for Render testing
     app.UseSwagger();
     app.UseSwaggerUI();
+    
+    // Add Scalar API Reference
+    if (app.Environment.IsDevelopment())
+    {
+        app.MapScalarApiReference(options => 
+        {
+            options.WithOpenApiRoutePattern("/swagger/v1/swagger.json");
+        });
+    }
 
     app.UseCors("DefaultPolicy");
     app.UseHttpsRedirection();

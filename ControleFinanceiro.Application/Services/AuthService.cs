@@ -1,10 +1,11 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using ControleFinanceiro.Application.Configuration;
 using ControleFinanceiro.Application.DTOs;
 using ControleFinanceiro.Domain.Entities;
 using ControleFinanceiro.Domain.Interfaces;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace ControleFinanceiro.Application.Services;
@@ -18,12 +19,12 @@ public interface IAuthService
 public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _usuarioRepository;
-    private readonly IConfiguration _configuration;
+    private readonly JwtSettings _jwtSettings;
 
-    public AuthService(IUsuarioRepository usuarioRepository, IConfiguration configuration)
+    public AuthService(IUsuarioRepository usuarioRepository, IOptions<JwtSettings> jwtOptions)
     {
         _usuarioRepository = usuarioRepository;
-        _configuration = configuration;
+        _jwtSettings = jwtOptions.Value;
     }
 
     public async Task<Result<AuthResponse>> RegisterAsync(RegisterRequest request)
@@ -62,9 +63,9 @@ public class AuthService : IAuthService
 
     private string GenerateJwtToken(Usuario user)
     {
-        var jwtSettings = _configuration.GetSection("JwtSettings");
-        var secretKey = jwtSettings.GetValue<string>("Secret") 
-                        ?? throw new InvalidOperationException("Configuração do JWT ausente.");
+        var secretKey = _jwtSettings.Secret;
+        if (string.IsNullOrEmpty(secretKey))
+            throw new InvalidOperationException("Configuração do JWT ausente.");
         
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
@@ -79,10 +80,10 @@ public class AuthService : IAuthService
         };
 
         var token = new JwtSecurityToken(
-            issuer: jwtSettings.GetValue<string>("Issuer"),
-            audience: jwtSettings.GetValue<string>("Audience"),
+            issuer: _jwtSettings.Issuer,
+            audience: _jwtSettings.Audience,
             claims: claims,
-            expires: DateTime.Now.AddDays(7),
+            expires: DateTime.Now.AddDays(_jwtSettings.ExpiryDays),
             signingCredentials: creds
         );
 

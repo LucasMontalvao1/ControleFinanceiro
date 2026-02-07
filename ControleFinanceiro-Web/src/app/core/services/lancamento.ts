@@ -26,7 +26,7 @@ export interface LancamentoResponse {
 })
 export class LancamentoService {
     private http = inject(HttpClient);
-    private apiUrl = `${environment.apiUrl}/api/lancamentos`;
+    private apiUrl = `${environment.apiUrl}/lancamentos`;
 
     getAll(start?: string, end?: string): Observable<LancamentoResponse[]> {
         let params: any = {};

@@ -20,7 +20,7 @@ public class DatabaseInitializer
     {
         Log.Information("Iniciando a inicialização automática do banco de dados...");
 
-        // EnsureDatabaseExists(); // Desabilitado para TiDB (banco já criado manualmente)
+        EnsureDatabaseExists();
 
         using var connection = _connectionFactory.CreateConnection();
         connection.Open();
