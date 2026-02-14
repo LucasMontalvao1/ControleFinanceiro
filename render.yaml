@@ -33,3 +33,5 @@ services:
           type: web
           name: controle-financeiro-api
           property: host
+      - key: NPM_CONFIG_LEGACY_PEER_DEPS
+        value: "true"
