@@ -17,7 +17,7 @@ services:
     name: controle-financeiro-web
     env: static
     rootDir: ControleFinanceiro-Web
-    buildCommand: npm install && sed -i "s|API_URL_PLACEHOLDER|$API_URL|g" src/environments/environment.prod.ts && npm run build
+    buildCommand: npm install && sed -i "s|API_URL_PLACEHOLDER|https://$API_URL.onrender.com|g" src/environments/environment.prod.ts && npm run build
     staticPublishPath: dist/ControleFinanceiro-Web/browser
     headers:
       - path: /*
@@ -32,4 +32,4 @@ services:
         fromService:
           type: web
           name: controle-financeiro-api
-          property: url
+          property: host
