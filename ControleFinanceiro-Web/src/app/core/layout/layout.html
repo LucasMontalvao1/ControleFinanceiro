@@ -1,6 +1,6 @@
 <div class="layout-container" [class.mobile-menu-open]="isMobileMenuOpen()">
     <!-- Sidebar -->
-    <app-sidebar [class.open]="isMobileMenuOpen()"></app-sidebar>
+    <app-sidebar [class.open]="isMobileMenuOpen()" (linkClicked)="isMobileMenuOpen.set(false)"></app-sidebar>
 
     <!-- Overlay for mobile -->
     <div class="mobile-overlay" (click)="isMobileMenuOpen.set(false)" *ngIf="isMobileMenuOpen()"></div>

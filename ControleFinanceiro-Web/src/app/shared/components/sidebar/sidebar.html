@@ -10,23 +10,23 @@
   </div>
 
   <nav class="sidebar-nav">
-    <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-item">
+    <a routerLink="/app/dashboard" routerLinkActive="active" class="nav-item" (click)="linkClicked.emit()">
       <lucide-icon name="LayoutDashboard"></lucide-icon>
       <span>Dashboard</span>
     </a>
-    <a routerLink="/app/lancamentos" routerLinkActive="active" class="nav-item">
+    <a routerLink="/app/lancamentos" routerLinkActive="active" class="nav-item" (click)="linkClicked.emit()">
       <lucide-icon name="ArrowsUpFromLine"></lucide-icon>
       <span>Transações</span>
     </a>
-    <a routerLink="/app/recorrentes" routerLinkActive="active" class="nav-item">
+    <a routerLink="/app/recorrentes" routerLinkActive="active" class="nav-item" (click)="linkClicked.emit()">
       <lucide-icon name="Repeat"></lucide-icon>
       <span>Recorrentes</span>
     </a>
-    <a routerLink="/app/metas" routerLinkActive="active" class="nav-item">
+    <a routerLink="/app/metas" routerLinkActive="active" class="nav-item" (click)="linkClicked.emit()">
       <lucide-icon name="Target"></lucide-icon>
       <span>Metas</span>
     </a>
-    <a routerLink="/app/categorias" routerLinkActive="active" class="nav-item">
+    <a routerLink="/app/categorias" routerLinkActive="active" class="nav-item" (click)="linkClicked.emit()">
       <lucide-icon name="Folder"></lucide-icon>
       <span>Categorias</span>
     </a>

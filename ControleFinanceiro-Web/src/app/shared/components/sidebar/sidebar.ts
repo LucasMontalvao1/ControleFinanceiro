@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { LucideAngularModule } from 'lucide-angular';
@@ -15,6 +15,8 @@ import { ThemeService } from '../../../core/services/theme';
 export class SidebarComponent {
   authService = inject(AuthService);
   themeService = inject(ThemeService);
+
+  @Output() linkClicked = new EventEmitter<void>();
 
   logout() {
     this.authService.logout();

@@ -16,7 +16,7 @@
             <h2 class="auth-welcome">Criar nova conta</h2>
             <p class="auth-instruction">Comece sua jornada financeira com o pé direito</p>
 
-            <form class="auth-form" (submit)="onRegister()" novalidate>
+            <form class="auth-form" [formGroup]="registerForm" (ngSubmit)="onRegister()" novalidate>
                 <div class="auth-alert error" *ngIf="error">
                     <lucide-icon name="AlertCircle" class="alert-icon"></lucide-icon>
                     <span>{{ error }}</span>
@@ -29,34 +29,50 @@
 
                 <div class="form-group">
                     <label>Nome Completo</label>
-                    <div class="input-container">
+                    <div class="input-container" [class.is-invalid]="f['nome'].touched && f['nome'].errors">
                         <lucide-icon name="User" class="input-icon"></lucide-icon>
-                        <input type="text" name="nome" [(ngModel)]="nome" placeholder="Digite seu nome" required>
+                        <input type="text" formControlName="nome" placeholder="Digite seu nome">
+                    </div>
+                    <div class="error-msg" *ngIf="f['nome'].touched && f['nome'].errors">
+                        <span *ngIf="f['nome'].errors['required']">O nome é obrigatório.</span>
+                        <span *ngIf="f['nome'].errors['maxlength']">Máximo de 100 caracteres.</span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Usuário</label>
-                    <div class="input-container">
+                    <div class="input-container" [class.is-invalid]="f['username'].touched && f['username'].errors">
                         <lucide-icon name="User" class="input-icon"></lucide-icon>
-                        <input type="text" name="username" [(ngModel)]="username" placeholder="usuário_exemplo"
-                            required>
+                        <input type="text" formControlName="username" placeholder="usuário_exemplo">
+                    </div>
+                    <div class="error-msg" *ngIf="f['username'].touched && f['username'].errors">
+                        <span *ngIf="f['username'].errors['required']">O login é obrigatório.</span>
+                        <span *ngIf="f['username'].errors['minlength']">Mínimo de 3 caracteres.</span>
+                        <span *ngIf="f['username'].errors['maxlength']">Máximo de 50 caracteres.</span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>E-mail</label>
-                    <div class="input-container">
+                    <div class="input-container" [class.is-invalid]="f['email'].touched && f['email'].errors">
                         <lucide-icon name="Mail" class="input-icon"></lucide-icon>
-                        <input type="email" name="email" [(ngModel)]="email" placeholder="exemplo@email.com" required>
+                        <input type="email" formControlName="email" placeholder="exemplo@email.com">
+                    </div>
+                    <div class="error-msg" *ngIf="f['email'].touched && f['email'].errors">
+                        <span *ngIf="f['email'].errors['required']">O e-mail é obrigatório.</span>
+                        <span *ngIf="f['email'].errors['email']">E-mail inválido.</span>
                     </div>
                 </div>
 
                 <div class="form-group">
                     <label>Senha</label>
-                    <div class="input-container">
+                    <div class="input-container" [class.is-invalid]="f['password'].touched && f['password'].errors">
                         <lucide-icon name="Lock" class="input-icon"></lucide-icon>
-                        <input type="password" name="senha" [(ngModel)]="senha" placeholder="••••••••" required>
+                        <input type="password" formControlName="password" placeholder="••••••••">
+                    </div>
+                    <div class="error-msg" *ngIf="f['password'].touched && f['password'].errors">
+                        <span *ngIf="f['password'].errors['required']">A senha é obrigatória.</span>
+                        <span *ngIf="f['password'].errors['minlength']">Mínimo de 6 caracteres.</span>
                     </div>
                 </div>
 

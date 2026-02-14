@@ -145,6 +145,15 @@
                 box-shadow: 0 0 0 1px #3b82f6;
             }
 
+            &.is-invalid {
+                border-color: #ef4444;
+                box-shadow: 0 0 0 1px #ef4444;
+
+                .input-icon {
+                    color: #ef4444;
+                }
+            }
+
             .input-icon {
                 position: absolute;
                 left: 0.75rem;
@@ -168,6 +177,26 @@
                 &::placeholder {
                     color: #475569;
                 }
+            }
+        }
+
+        .error-msg {
+            font-size: 0.75rem;
+            color: #f87171;
+            margin-top: 0.25rem;
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
             }
         }
     }
