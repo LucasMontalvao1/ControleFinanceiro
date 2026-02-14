@@ -15,10 +15,10 @@
 
     @media (max-width: 992px) {
         transform: translateX(-100%);
+    }
 
-        &.open {
-            transform: translateX(0);
-        }
+    :host(.open) & {
+        transform: translateX(0);
     }
 
     .sidebar-header {

@@ -52,11 +52,14 @@
                         <span class="category-name">{{ item.categoriaNome }}</span>
                     </div>
                 </div>
-                @if (item.valorLimite > 0) {
-                <button class="icon-btn" (click)="openEditMetaModal(item)" title="Editar Meta">
-                    <lucide-icon name="Pencil"></lucide-icon>
-                </button>
-                }
+                <div class="item-actions">
+                    <button class="icon-btn" (click)="openEditMetaModal(item)" title="Editar Meta">
+                        <lucide-icon name="Pencil"></lucide-icon>
+                    </button>
+                    <button class="icon-btn" (click)="deleteMeta(item.id)" title="Excluir Meta">
+                        <lucide-icon name="Trash2"></lucide-icon>
+                    </button>
+                </div>
             </div>
 
             <div class="meta-body">

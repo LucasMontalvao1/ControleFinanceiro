@@ -122,4 +122,15 @@ export class MetasComponent implements OnInit {
             error: () => alert('Erro ao salvar meta.')
         });
     }
+
+    deleteMeta(id: number) {
+        if (!confirm('Tem certeza que deseja excluir esta meta?')) return;
+
+        this.metaService.delete(id).subscribe({
+            next: () => {
+                this.loadMetas();
+            },
+            error: () => alert('Erro ao excluir meta.')
+        });
+    }
 }
