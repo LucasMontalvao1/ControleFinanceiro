@@ -6,7 +6,7 @@
         </div>
 
         <div class="header-actions">
-            <div class="date-navigator">
+            <div class="date-navigator desktop-only">
                 <button class="nav-btn" (click)="changeMonth(-1)">
                     <lucide-icon name="ChevronLeft"></lucide-icon>
                 </button>
@@ -17,14 +17,30 @@
             </div>
             <button class="btn-secondary" (click)="applyToMonth()" [disabled]="recorrentes().length === 0">
                 <lucide-icon name="RefreshCw"></lucide-icon>
-                <span>Aplicar ao Mês</span>
+                <span class="desktop-only">Aplicar ao Mês</span>
             </button>
-            <button class="btn-primary" (click)="openAddModal()">
+            <button class="btn-primary desktop-only" (click)="openAddModal()">
                 <lucide-icon name="Plus"></lucide-icon>
                 <span>Nova Recorrente</span>
             </button>
         </div>
     </div>
+
+    <!-- Mobile Date Navigator -->
+    <div class="date-navigator mobile-only">
+        <button class="nav-btn" (click)="changeMonth(-1)">
+            <lucide-icon name="ChevronLeft"></lucide-icon>
+        </button>
+        <span class="current-month">{{ currentMonthName() }}</span>
+        <button class="nav-btn" (click)="changeMonth(1)">
+            <lucide-icon name="ChevronRight"></lucide-icon>
+        </button>
+    </div>
+
+    <!-- Mobile FAB -->
+    <button type="button" class="fab-btn mobile-only" (click)="openAddModal()" aria-label="Nova Recorrente">
+        <lucide-icon name="Plus"></lucide-icon>
+    </button>
 
     <!-- Info Box -->
     <div class="info-box">
@@ -92,48 +108,47 @@
                 </button>
             </div>
 
-            <form (ngSubmit)="save()" #recorrenteForm="ngForm">
-                <div class="form-group">
-                    <label>Descrição</label>
-                    <input type="text" name="descricao" [(ngModel)]="form.descricao"
-                        placeholder="Ex: Aluguel, Internet..." required>
-                </div>
+            @form (ngSubmit)="save()" #recorrenteForm="ngForm" class="modal-form">
+            <div class="form-group">
+                <label>Descrição</label>
+                <input type="text" name="descricao" [(ngModel)]="form.descricao" placeholder="Ex: Aluguel, Internet..."
+                    required>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Valor</label>
-                        <input type="number" name="valor" [(ngModel)]="form.valor" placeholder="0,00" step="0.01"
-                            required>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label>Dia de Vencimento</label>
-                        <input type="number" name="dia" [(ngModel)]="form.diaVencimento" min="1" max="31" required>
-                    </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label>Valor</label>
+                    <input type="number" name="valor" [(ngModel)]="form.valor" placeholder="0,00" step="0.01" required>
                 </div>
+                <div class="form-group flex-1">
+                    <label>Dia de Vencimento</label>
+                    <input type="number" name="dia" [(ngModel)]="form.diaVencimento" min="1" max="31" required>
+                </div>
+            </div>
 
-                <div class="form-row">
-                    <div class="form-group flex-1">
-                        <label>Tipo</label>
-                        <select name="tipo" [(ngModel)]="form.tipo">
-                            <option value="Saida">Despesa</option>
-                            <option value="Receita">Receita</option>
-                        </select>
-                    </div>
-                    <div class="form-group flex-1">
-                        <label>Categoria</label>
-                        <select name="categoria" [(ngModel)]="form.categoriaId" required>
-                            <option [value]="0" disabled>Selecione...</option>
-                            @for (cat of categorias(); track cat.id) {
-                            <option [value]="cat.id">{{ cat.nome }}</option>
-                            }
-                        </select>
-                    </div>
+            <div class="form-row">
+                <div class="form-group flex-1">
+                    <label>Tipo</label>
+                    <select name="tipo" [(ngModel)]="form.tipo">
+                        <option value="Saida">Despesa</option>
+                        <option value="Receita">Receita</option>
+                    </select>
                 </div>
+                <div class="form-group flex-1">
+                    <label>Categoria</label>
+                    <select name="categoria" [(ngModel)]="form.categoriaId" required>
+                        <option [value]="0" disabled>Selecione...</option>
+                        @for (cat of categorias(); track cat.id) {
+                        <option [value]="cat.id">{{ cat.nome }}</option>
+                        }
+                    </select>
+                </div>
+            </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn-outline" (click)="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar</button>
-                </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-outline" (click)="closeModal()">Cancelar</button>
+                <button type="submit" class="btn-primary">Salvar</button>
+            </div>
             </form>
         </div>
     </div>

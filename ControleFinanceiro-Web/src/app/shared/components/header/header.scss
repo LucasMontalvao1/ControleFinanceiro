@@ -1,13 +1,13 @@
 @use "variables" as *;
 
 .header {
-    height: 72px;
+    height: calc(72px + var(--safe-area-top));
     background-color: var(--bg-card);
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 0 1.5rem;
+    padding: var(--safe-area-top) 1.5rem 0;
     position: sticky;
     top: 0;
     z-index: 40;

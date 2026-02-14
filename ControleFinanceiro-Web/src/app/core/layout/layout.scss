@@ -5,8 +5,10 @@
     height: 100vh;
     width: 100vw;
     overflow: hidden;
+    /* Keep hidden to manage sub-scrolls */
     background-color: var(--bg-dark);
     position: relative;
+    max-width: 100%;
 }
 
 .main-wrapper {
@@ -21,11 +23,11 @@
     flex: 1;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 1.5rem;
+    padding: calc(1.5rem + var(--safe-area-top)) 1.5rem calc(1.5rem + var(--safe-area-bottom));
     background-color: transparent;
 
     @media (max-width: 576px) {
-        padding: 1rem;
+        padding: calc(1rem + var(--safe-area-top)) 1rem calc(1rem + var(--safe-area-bottom));
     }
 }
 
