@@ -96,93 +96,9 @@
     }
 }
 
-.date-navigator {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--bg-card);
-    padding: 0.5rem 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-
-    .current-month {
-        color: var(--text-primary);
-        font-weight: 600;
-        min-width: 140px;
-        text-align: center;
-        text-transform: capitalize;
-    }
-
-    .nav-btn {
-        background: transparent;
-        border: none;
-        color: var(--text-secondary);
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        transition: 0.2s;
-
-        &:hover {
-            color: #3b82f6;
-        }
-
-        lucide-icon {
-            width: 20px;
-            height: 20px;
-        }
-    }
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-outline {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-
-    lucide-icon {
-        width: 18px;
-        height: 18px;
-    }
-}
-
-.btn-primary {
-    background: #3b82f6;
-    color: white;
-
-    &:hover {
-        background: #2563eb;
-        transform: translateY(-1px);
-    }
-}
-
-.btn-secondary {
-    background: transparent;
-    border-color: var(--border-color);
-    color: var(--text-primary);
-
-    &:hover {
-        background: var(--bg-dark);
-        border-color: var(--accent-blue);
-    }
-}
-
-.btn-outline {
-    background: transparent;
-    border-color: var(--border-color);
-    color: var(--text-secondary);
-
-    &:hover {
-        color: var(--text-primary);
-        border-color: var(--accent-blue);
-        background: var(--bg-dark);
+@media (max-width: 768px) {
+    .page-header {
+        margin-bottom: 1.5rem;
     }
 }
 

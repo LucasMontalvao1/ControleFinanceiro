@@ -3,6 +3,15 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+
+    @media (max-width: 768px) {
+        flex-direction: column;
+        align-items: stretch;
+        margin-bottom: 1.5rem;
+        gap: 1rem;
+    }
 
     .header-info {
         h1 {
@@ -21,73 +30,47 @@
     .header-actions {
         display: flex;
         gap: 1rem;
-    }
-}
 
-.date-navigator {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
-    background: var(--bg-card);
-    padding: 0.5rem 1rem;
-    border-radius: 0.75rem;
-    border: 1px solid var(--border-color);
-
-    .current-month {
-        color: var(--text-primary);
-        font-weight: 600;
-        min-width: 140px;
-        text-align: center;
-        text-transform: capitalize;
-    }
-
-    .nav-btn {
-        background: transparent;
-        border: none;
-        color: #94a3b8;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        transition: 0.2s;
-
-        &:hover {
-            color: #3b82f6;
+        @media (max-width: 768px) {
+            width: 100%;
         }
 
-        lucide-icon {
-            width: 20px;
-            height: 20px;
+        .date-navigator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-card);
+            padding: 0.625rem 1rem;
+            border-radius: 0.75rem;
+            border: 1px solid var(--border-color);
+            min-width: 220px;
+
+            @media (max-width: 768px) {
+                width: 100%;
+            }
+
+            .current-month {
+                color: var(--accent-blue);
+                font-weight: 700;
+                text-align: center;
+                text-transform: capitalize;
+                font-size: 0.875rem;
+            }
+
+            .nav-btn {
+                background: transparent;
+                border: none;
+                color: var(--text-secondary);
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+
+                lucide-icon {
+                    width: 1.25rem;
+                    height: 1.25rem;
+                }
+            }
         }
-    }
-}
-
-.btn-primary,
-.btn-secondary,
-.btn-outline {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    padding: 0.625rem 1.25rem;
-    border-radius: 0.75rem;
-    font-weight: 600;
-    font-size: 0.875rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    border: 1px solid transparent;
-
-    lucide-icon {
-        width: 18px;
-        height: 18px;
-    }
-}
-
-.btn-primary {
-    background: #3b82f6;
-    color: white;
-
-    &:hover {
-        background: #2563eb;
-        transform: translateY(-1px);
     }
 }
 
