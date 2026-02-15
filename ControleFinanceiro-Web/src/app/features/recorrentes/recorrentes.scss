@@ -1,3 +1,15 @@
+@use "variables" as *;
+
+.page-container {
+    padding: 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+
+    @media (max-width: 768px) {
+        padding: 1.25rem 1rem;
+    }
+}
+
 .page-header {
     display: flex;
     justify-content: space-between;
@@ -84,6 +96,14 @@
                 .btn-primary,
                 .btn-secondary {
                     flex: 1;
+                }
+            }
+
+            /* Ensure text doesn't hide/wrap weirdly */
+            .btn-secondary,
+            .btn-primary {
+                span {
+                    display: inline-block;
                 }
             }
         }
