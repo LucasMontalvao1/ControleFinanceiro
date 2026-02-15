@@ -17,11 +17,11 @@
             </div>
 
             <div class="action-buttons">
-                <button class="btn-secondary" (click)="applyToMonth()" [disabled]="recorrentes().length === 0">
+                <button class="btn btn-secondary" (click)="applyToMonth()" [disabled]="recorrentes().length === 0">
                     <lucide-icon name="RefreshCw"></lucide-icon>
                     <span>Aplicar</span>
                 </button>
-                <button class="btn-primary" (click)="openAddModal()">
+                <button class="btn btn-primary" (click)="openAddModal()">
                     <lucide-icon name="Plus"></lucide-icon>
                     <span>Nova Recorrência</span>
                 </button>
@@ -51,7 +51,7 @@
         <div class="empty-state">
             <lucide-icon name="Repeat"></lucide-icon>
             <p>Nenhuma transação recorrente cadastrada.</p>
-            <button class="btn-outline" (click)="openAddModal()">Cadastrar primeira</button>
+            <button class="btn btn-outline" (click)="openAddModal()">Cadastrar primeira</button>
         </div>
         } @else {
         @for (item of recorrentes(); track item.id) {
@@ -134,8 +134,8 @@
                 </div>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn-outline" (click)="closeModal()">Cancelar</button>
-                    <button type="submit" class="btn-primary">Salvar</button>
+                    <button type="button" class="btn btn-outline" (click)="closeModal()">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Salvar</button>
                 </div>
             </form>
         </div>

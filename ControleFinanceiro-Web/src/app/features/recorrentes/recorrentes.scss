@@ -93,9 +93,9 @@
             @media (max-width: 576px) {
                 width: 100%;
 
-                .btn-primary,
-                .btn-secondary {
+                .btn {
                     flex: 1;
+                    min-width: 140px;
                 }
             }
 
