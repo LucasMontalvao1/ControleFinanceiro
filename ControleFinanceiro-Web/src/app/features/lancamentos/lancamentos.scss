@@ -5,14 +5,12 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
     gap: 1.5rem;
 
-    @media (max-width: 768px) {
+    @media (max-width: 992px) {
         flex-direction: column;
         align-items: stretch;
-        margin-bottom: 1.5rem;
-        gap: 1rem;
+        gap: 1.25rem;
     }
 
     .header-info {
@@ -34,7 +32,7 @@
         align-items: center;
         flex-wrap: wrap;
 
-        @media (max-width: 768px) {
+        @media (max-width: 576px) {
             flex-direction: column;
             align-items: stretch;
         }
@@ -47,9 +45,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            min-width: 200px;
+            min-width: 220px;
 
-            @media (max-width: 768px) {
+            @media (max-width: 576px) {
                 width: 100%;
             }
 
@@ -82,13 +80,14 @@
         .action-buttons {
             display: flex;
             gap: 0.75rem;
+            flex-wrap: wrap;
 
-            @media (max-width: 768px) {
+            @media (max-width: 576px) {
                 width: 100%;
 
                 .btn {
                     flex: 1;
-                    justify-content: center;
+                    min-width: 140px;
                 }
             }
         }
@@ -101,6 +100,7 @@
     .search-input-wrapper {
         position: relative;
         max-width: 600px;
+        width: 100%;
 
         .search-icon {
             position: absolute;
@@ -137,6 +137,7 @@
     border-radius: 1.25rem;
     min-height: 400px;
     padding: 1rem;
+    overflow-x: hidden;
 
     .empty-state {
         height: 300px;
@@ -177,6 +178,10 @@
         transition: var(--transition);
         cursor: pointer;
 
+        @media (max-width: 576px) {
+            padding: 1rem;
+        }
+
         &:last-child {
             border-bottom: none;
         }
@@ -193,6 +198,7 @@
             align-items: center;
             justify-content: center;
             margin-right: 1.25rem;
+            flex-shrink: 0;
 
             &.receita {
                 background-color: rgba(34, 197, 94, 0.1);
@@ -212,12 +218,16 @@
 
         .t-info {
             flex: 1;
+            min-width: 0;
 
             .t-desc {
                 display: block;
                 font-weight: 600;
                 color: var(--text-primary);
                 margin-bottom: 0.25rem;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
             }
 
             .t-meta {
@@ -236,6 +246,8 @@
         .t-value {
             font-weight: 700;
             font-size: 1.125rem;
+            white-space: nowrap;
+            margin-left: 1rem;
 
             &.receita {
                 color: var(--accent-green);
@@ -248,58 +260,21 @@
     }
 }
 
-/* Modal Styles */
-.modal-overlay {
-    position: fixed;
-    inset: 0;
-    background-color: rgba(0, 0, 0, 0.7);
-    backdrop-filter: blur(8px);
-    z-index: 1000;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 1rem;
-}
-
-.modal-content {
-    background-color: var(--bg-card);
-    border: 1px solid var(--border-color);
-    border-radius: 1.5rem;
-    width: 100%;
-    max-width: 500px;
-    box-shadow: var(--shadow-xl);
-    animation: modalIn 0.3s ease-out;
-
-    @media (max-width: 576px) {
-        height: 100dvh;
-        /* Dynamic viewport height */
-        border-radius: 0;
-        max-width: 100%;
-        display: flex;
-        flex-direction: column;
-        padding-top: var(--safe-area-top);
-        padding-bottom: var(--safe-area-bottom);
-    }
-}
-
 .modal-header {
-    padding: 1.5rem;
-    border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: space-between;
-
-    h2 {
-        font-size: 1.25rem;
-        font-weight: 700;
-        color: var(--text-primary);
-    }
+    margin-bottom: 1.5rem;
 
     .close-btn {
         background: none;
         border: none;
         color: var(--text-secondary);
         cursor: pointer;
+        padding: 0.5rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         lucide-icon {
             width: 1.5rem;
@@ -313,12 +288,8 @@
 }
 
 .modal-form {
-    padding: 1.5rem;
-    flex: 1;
-    overflow-y: auto;
-
     .form-group {
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.25rem;
 
         label {
             display: block;
@@ -344,19 +315,16 @@
                 border-color: var(--accent-blue);
             }
         }
-
-        .warning-text {
-            font-size: 0.75rem;
-            color: var(--accent-red);
-            margin-top: 0.5rem;
-            display: block;
-        }
     }
 
     .form-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 1rem;
+
+        @media (max-width: 480px) {
+            grid-template-columns: 1fr;
+        }
     }
 
     .radio-group {
@@ -404,13 +372,19 @@
 }
 
 .modal-footer {
-    padding: 1.5rem;
     border-top: 1px solid var(--border-color);
+    margin-top: 1.5rem;
+    padding-top: 1.5rem;
     display: flex;
     gap: 1rem;
+    flex-wrap: wrap;
 
     .spacer {
         flex: 1;
+
+        @media (max-width: 480px) {
+            display: none;
+        }
     }
 
     .btn-danger {
@@ -422,17 +396,5 @@
             background-color: var(--accent-red);
             color: white;
         }
-    }
-}
-
-@keyframes modalIn {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
     }
 }
