@@ -6,7 +6,7 @@
         </div>
 
         <div class="header-actions">
-            <div class="date-selector desktop-only">
+            <div class="date-selector">
                 <button type="button" class="nav-btn" (click)="prevMonth()">
                     <lucide-icon name="ChevronLeft"></lucide-icon>
                 </button>
@@ -16,33 +16,19 @@
                 </button>
             </div>
 
-            <button type="button" class="btn btn-export">
-                <lucide-icon name="Download"></lucide-icon>
-                <span class="desktop-only">Exportar</span>
-            </button>
+            <div class="action-buttons">
+                <button type="button" class="btn btn-export">
+                    <lucide-icon name="Download"></lucide-icon>
+                    <span>Exportar</span>
+                </button>
 
-            <button type="button" class="btn btn-primary desktop-only" (click)="openModal()">
-                <lucide-icon name="Plus"></lucide-icon>
-                <span>Nova Transação</span>
-            </button>
+                <button type="button" class="btn btn-primary" (click)="openModal()">
+                    <lucide-icon name="Plus"></lucide-icon>
+                    <span>Nova Transação</span>
+                </button>
+            </div>
         </div>
     </div>
-
-    <!-- Mobile Date Selector -->
-    <div class="date-selector mobile-only">
-        <button type="button" class="nav-btn" (click)="prevMonth()">
-            <lucide-icon name="ChevronLeft"></lucide-icon>
-        </button>
-        <span class="current-date">{{ formattedMonth() }}</span>
-        <button type="button" class="nav-btn" (click)="nextMonth()">
-            <lucide-icon name="ChevronRight"></lucide-icon>
-        </button>
-    </div>
-
-    <!-- Mobile FAB -->
-    <button type="button" class="fab-btn mobile-only" (click)="openModal()" aria-label="Nova Transação">
-        <lucide-icon name="Plus"></lucide-icon>
-    </button>
 
     <!-- Search Bar -->
     <div class="search-bar">

@@ -5,7 +5,7 @@
             <p>Defina limites mensais por categoria</p>
         </div>
         <div class="header-actions">
-            <div class="date-navigator desktop-only">
+            <div class="date-navigator">
                 <button class="nav-btn" (click)="changeMonth(-1)">
                     <lucide-icon name="ChevronLeft"></lucide-icon>
                 </button>
@@ -15,17 +15,6 @@
                 </button>
             </div>
         </div>
-    </div>
-
-    <!-- Mobile Date Navigator -->
-    <div class="date-navigator mobile-only">
-        <button class="nav-btn" (click)="changeMonth(-1)">
-            <lucide-icon name="ChevronLeft"></lucide-icon>
-        </button>
-        <span class="current-month">{{ currentMonthName() }}</span>
-        <button class="nav-btn" (click)="changeMonth(1)">
-            <lucide-icon name="ChevronRight"></lucide-icon>
-        </button>
     </div>
 
     <!-- Info Box -->

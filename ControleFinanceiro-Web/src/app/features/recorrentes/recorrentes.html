@@ -6,7 +6,7 @@
         </div>
 
         <div class="header-actions">
-            <div class="date-navigator desktop-only">
+            <div class="date-navigator">
                 <button class="nav-btn" (click)="changeMonth(-1)">
                     <lucide-icon name="ChevronLeft"></lucide-icon>
                 </button>
@@ -15,32 +15,19 @@
                     <lucide-icon name="ChevronRight"></lucide-icon>
                 </button>
             </div>
-            <button class="btn-secondary" (click)="applyToMonth()" [disabled]="recorrentes().length === 0">
-                <lucide-icon name="RefreshCw"></lucide-icon>
-                <span class="desktop-only">Aplicar ao Mês</span>
-            </button>
-            <button class="btn-primary desktop-only" (click)="openAddModal()">
-                <lucide-icon name="Plus"></lucide-icon>
-                <span>Nova Recorrente</span>
-            </button>
+
+            <div class="action-buttons">
+                <button class="btn-secondary" (click)="applyToMonth()" [disabled]="recorrentes().length === 0">
+                    <lucide-icon name="RefreshCw"></lucide-icon>
+                    <span>Aplicar</span>
+                </button>
+                <button class="btn-primary" (click)="openAddModal()">
+                    <lucide-icon name="Plus"></lucide-icon>
+                    <span>Nova Recorrência</span>
+                </button>
+            </div>
         </div>
     </div>
-
-    <!-- Mobile Date Navigator -->
-    <div class="date-navigator mobile-only">
-        <button class="nav-btn" (click)="changeMonth(-1)">
-            <lucide-icon name="ChevronLeft"></lucide-icon>
-        </button>
-        <span class="current-month">{{ currentMonthName() }}</span>
-        <button class="nav-btn" (click)="changeMonth(1)">
-            <lucide-icon name="ChevronRight"></lucide-icon>
-        </button>
-    </div>
-
-    <!-- Mobile FAB -->
-    <button type="button" class="fab-btn mobile-only" (click)="openAddModal()" aria-label="Nova Recorrente">
-        <lucide-icon name="Plus"></lucide-icon>
-    </button>
 
     <!-- Info Box -->
     <div class="info-box">
