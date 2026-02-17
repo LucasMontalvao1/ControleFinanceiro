@@ -3,4 +3,5 @@
   <Project Path="ControleFinanceiro.Application/ControleFinanceiro.Application.csproj" />
   <Project Path="ControleFinanceiro.Infrastructure/ControleFinanceiro.Infrastructure.csproj" />
   <Project Path="ControleFinanceiro.Domain/ControleFinanceiro.Domain.csproj" />
+  <Project Path="ControleFinanceiro.Tests/ControleFinanceiro.Tests.csproj" />
 </Solution>
