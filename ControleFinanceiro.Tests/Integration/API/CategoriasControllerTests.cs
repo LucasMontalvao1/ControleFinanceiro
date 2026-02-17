@@ -58,7 +58,7 @@ public class CategoriasControllerTests : IClassFixture<CustomWebApplicationFacto
 
         var response = await _client.PostAsJsonAsync("/api/categorias", request);
 
-        response.StatusCode.Should().Be(HttpStatusCode.OK);
+        response.StatusCode.Should().Be(HttpStatusCode.Created);
         var content = await response.Content.ReadFromJsonAsync<CategoriaResponse>();
         content.Should().NotBeNull();
         content!.Nome.Should().Be("Nova Categoria");

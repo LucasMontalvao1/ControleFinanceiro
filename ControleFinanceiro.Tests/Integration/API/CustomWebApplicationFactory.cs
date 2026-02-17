@@ -21,6 +21,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     public Mock<ILancamentoService> LancamentoServiceMock { get; } = new();
     public Mock<IMetaService> MetaServiceMock { get; } = new();
     public Mock<IRecorrenteService> RecorrenteServiceMock { get; } = new();
+    public Mock<ControleFinanceiro.Domain.Interfaces.IAiReceiptService> AiReceiptServiceMock { get; } = new();
+    public Mock<ControleFinanceiro.Domain.Interfaces.IAiScanHistoryRepository> AiScanHistoryRepositoryMock { get; } = new();
 
     public string JwtSecret { get; } = "SuperSecretKeyForTestingPurposesOnly123!";
     public string JwtIssuer { get; } = "ControleFinanceiroTest";
@@ -34,6 +36,9 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         Environment.SetEnvironmentVariable("JwtSettings__Audience", JwtAudience);
         Environment.SetEnvironmentVariable("JwtSettings__ExpirationMinutes", "60");
         Environment.SetEnvironmentVariable("EnableGlobalErrorHandling", "false");
+        
+        // Mock Groq API Key to avoid DI failure
+        Environment.SetEnvironmentVariable("Groq__ApiKey", "test-api-key");
     }
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
@@ -47,7 +52,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 { "JwtSettings:Issuer", JwtIssuer },
                 { "JwtSettings:Audience", JwtAudience },
                 { "JwtSettings:ExpirationMinutes", "60" },
-                { "EnableGlobalErrorHandling", "false" }
+                { "EnableGlobalErrorHandling", "false" },
+                { "Groq:ApiKey", "test-api-key" }
             });
         });
 
@@ -61,6 +67,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services.RemoveAll<ILancamentoService>();
             services.RemoveAll<IMetaService>();
             services.RemoveAll<IRecorrenteService>();
+            services.RemoveAll<ControleFinanceiro.Domain.Interfaces.IAiReceiptService>();
+            services.RemoveAll<ControleFinanceiro.Domain.Interfaces.IAiScanHistoryRepository>();
 
             // Register mocks
             services.AddSingleton(AuthServiceMock.Object);
@@ -68,13 +76,15 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
             services.AddSingleton(LancamentoServiceMock.Object);
             services.AddSingleton(MetaServiceMock.Object);
             services.AddSingleton(RecorrenteServiceMock.Object);
+            services.AddSingleton(AiReceiptServiceMock.Object);
+            services.AddSingleton(AiScanHistoryRepositoryMock.Object);
         });
     }
 
     public string GenerateJwtToken(int userId, string email, string role = "User")
     {
         var tokenHandler = new JwtSecurityTokenHandler();
-        var key = Encoding.ASCII.GetBytes(JwtSecret);
+        var key = Encoding.UTF8.GetBytes(JwtSecret);
         var tokenDescriptor = new SecurityTokenDescriptor
         {
             Subject = new ClaimsIdentity(new[]
@@ -82,7 +92,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
                 new Claim(ClaimTypes.NameIdentifier, userId.ToString()),
                 new Claim(ClaimTypes.Email, email),
                 new Claim(ClaimTypes.Role, role),
-                new Claim("unique_name", email)
+                new Claim("unique_name", email),
+                new Claim(JwtRegisteredClaimNames.Sub, userId.ToString()) // Explicitly add 'sub' just in case
             }),
             Expires = DateTime.UtcNow.AddMinutes(60),
             Issuer = JwtIssuer,
@@ -98,7 +109,10 @@ public static class ServiceCollectionExtensions
 {
     public static void RemoveAll<T>(this IServiceCollection services)
     {
-        var serviceDescriptor = services.FirstOrDefault(descriptor => descriptor.ServiceType == typeof(T));
-        if (serviceDescriptor != null) services.Remove(serviceDescriptor);
+        var descriptors = services.Where(descriptor => descriptor.ServiceType == typeof(T)).ToList();
+        foreach (var descriptor in descriptors)
+        {
+            services.Remove(descriptor);
+        }
     }
 }

@@ -45,6 +45,18 @@ try
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.ILancamentoService, ControleFinanceiro.Application.Services.LancamentoService>();
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.IRecorrenteService, ControleFinanceiro.Application.Services.RecorrenteService>();
     builder.Services.AddScoped<ControleFinanceiro.Application.Services.IMetaService, ControleFinanceiro.Application.Services.MetaService>();
+    builder.Services.AddScoped<ControleFinanceiro.Domain.Interfaces.IAiScanHistoryRepository, ControleFinanceiro.Infrastructure.Persistence.Repositories.AiScanHistoryRepository>();
+
+    // Memory Cache for Rate Limiting
+    builder.Services.AddMemoryCache();
+
+    // Groq Vision Client with Resilience
+    builder.Services.AddHttpClient<ControleFinanceiro.Domain.Interfaces.IAiReceiptService, ControleFinanceiro.Infrastructure.Services.GroqVisionService>((sp, client) =>
+    {
+        client.BaseAddress = new Uri("https://api.groq.com/openai/v1/");
+        client.Timeout = TimeSpan.FromSeconds(30);
+    })
+    .AddStandardResilienceHandler(); // Adds Retry, Circuit Breaker, Timeout, RateLimiter strategies
 
     // FluentValidation
     builder.Services.AddFluentValidationAutoValidation();
@@ -55,8 +67,6 @@ try
     builder.Services.Configure<ControleFinanceiro.Application.Configuration.JwtSettings>(jwtSection);
     var jwtSettings = jwtSection.Get<ControleFinanceiro.Application.Configuration.JwtSettings>();
     var key = Encoding.UTF8.GetBytes(jwtSettings?.Secret ?? throw new InvalidOperationException("JWT Secret is missing"));
-
-    System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
 
     builder.Services.AddAuthentication(x =>
     {
@@ -99,7 +109,6 @@ try
     app.UseMiddleware<ControleFinanceiro.API.Middleware.GlobalErrorHandlingMiddleware>();
 
     // Configure the HTTP request pipeline.
-    // Enable Swagger in ALL environments for Render testing
     app.UseSwagger();
     app.UseSwaggerUI();
     

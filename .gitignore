@@ -1,6 +1,8 @@
 # .NET Core #
 [Bb]in/
 [Oo]bj/
+[Dd]ebug/
+[Rr]elease/
 
 # Visual Studio #
 .vs/
@@ -8,17 +10,33 @@
 *.userosscache
 *.sln.docstates
 *.suo
+*.sln.view
 
 # Visual Studio Launch Settings #
 Properties/launchSettings.json
 
 # Build results #
-[Dd]ebug/
-[Rr]elease/
 x64/
 x86/
 [Aa][Rr][Mm]/
 [Aa][Rr][Mm]64/
+
+# Test Results #
+TestResults/
+[Cc]overage-report/
+*.trx
+*.coverage
+*.coveragexml
+
+# Logs #
+logs/
+*.log
+ControleFinanceiro.API/logs/
+
+# Frontend (Node) #
+node_modules/
+dist/
+.angular/
 
 # Others #
 .DS_Store

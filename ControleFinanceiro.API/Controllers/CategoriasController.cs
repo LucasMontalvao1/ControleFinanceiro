@@ -35,7 +35,7 @@ public class CategoriasController : ControllerBase
     public async Task<IActionResult> Create(CategoriaRequest request)
     {
         var result = await _categoriaService.CreateAsync(request, GetUsuarioId());
-        return Ok(result.Value);
+        return StatusCode(201, result.Value);
     }
 
     [HttpPut("{id}")]
