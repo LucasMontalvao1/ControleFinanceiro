@@ -4,31 +4,32 @@ import { LucideAngularModule } from 'lucide-angular';
 import { FormsModule } from '@angular/forms';
 import { LancamentoService, LancamentoResponse, LancamentoRequest } from '../../core/services/lancamento';
 import { CategoriaService, CategoriaResponse } from '../../core/services/categoria';
+import { AiService, AiAnalyzeResponse } from '../../core/services/ai';
+import { MagicScanComponent } from '../../shared/components/magic-scan/magic-scan.component';
 
 @Component({
   selector: 'app-lancamentos',
   standalone: true,
-  imports: [CommonModule, LucideAngularModule, FormsModule],
+  imports: [CommonModule, LucideAngularModule, FormsModule, MagicScanComponent],
   templateUrl: './lancamentos.html',
   styleUrl: './lancamentos.scss'
 })
 export class LancamentosComponent implements OnInit {
   private lancamentoService = inject(LancamentoService);
   private categoriaService = inject(CategoriaService);
+  private aiService = inject(AiService);
 
   lancamentos = signal<LancamentoResponse[]>([]);
   categorias = signal<CategoriaResponse[]>([]);
   loading = signal<boolean>(false);
   showModal = signal<boolean>(false);
+  showMagicScan = signal<boolean>(false);
 
   searchTerm = signal<string>('');
   currentDate = signal<Date>(new Date());
 
-  // Reactive selected type for filtering Categories in Modal
-  // It uses "Receita" or "Despesa" to match Categoria.Tipo
   selectedTipo = signal<'Receita' | 'Despesa'>('Despesa');
 
-  // Form handling
   editMode = signal<boolean>(false);
   editingId = signal<number | null>(null);
   form = {
@@ -64,17 +65,24 @@ export class LancamentosComponent implements OnInit {
 
   ngOnInit() {
     this.loadData();
+    this.refreshCategories();
+  }
+
+  private refreshCategories() {
     this.categoriaService.getAll().subscribe(data => {
-      this.categorias.set(data);
+      const mappedData = data.map(c => ({
+        ...c,
+        tipo: this.mapBackendToFrontend(c.tipo)
+      }));
+      this.categorias.set(mappedData);
     });
   }
 
-  // Map Backend "Entrada/Saida" to Frontend "Receita/Despesa"
   private mapBackendToFrontend(tipo: string): 'Receita' | 'Despesa' {
-    return tipo === 'Entrada' ? 'Receita' : 'Despesa';
+    if (tipo === 'Entrada' || tipo === 'Receita') return 'Receita';
+    return 'Despesa';
   }
 
-  // Map Frontend "Receita/Despesa" to Backend "Entrada/Saida"
   private mapFrontendToBackend(tipo: string): string {
     return tipo === 'Receita' ? 'Entrada' : 'Saida';
   }
@@ -87,7 +95,6 @@ export class LancamentosComponent implements OnInit {
 
     this.lancamentoService.getAll(startOfMonth.toISOString(), endOfMonth.toISOString()).subscribe({
       next: (data: LancamentoResponse[]) => {
-        // Map types during load for UI consistency
         const mappedData = data.map(l => ({
           ...l,
           tipo: this.mapBackendToFrontend(l.tipo)
@@ -103,7 +110,6 @@ export class LancamentosComponent implements OnInit {
     if (lancamento) {
       this.editMode.set(true);
       this.editingId.set(lancamento.id);
-      // Lancamento.tipo is already mapped to Receita/Despesa here
       this.selectedTipo.set(lancamento.tipo as 'Receita' | 'Despesa');
       this.form = {
         descricao: lancamento.descricao,
@@ -128,11 +134,90 @@ export class LancamentosComponent implements OnInit {
     this.showModal.set(true);
   }
 
+  openMagicScan() {
+    this.showMagicScan.set(true);
+  }
+
+  handleScanResult(result: any) {
+    this.showMagicScan.set(false);
+
+    if (!result.itens || result.itens.length === 0) return;
+
+    if (result.itens.length === 1) {
+      const item = result.itens[0];
+      this.form.descricao = item.descricao;
+      this.form.valor = item.valor;
+      this.form.data = item.data || new Date().toISOString().split('T')[0];
+      this.selectedTipo.set(item.tipo);
+      this.form.categoriaId = item.categoriaId;
+
+      this.editMode.set(false);
+      this.editingId.set(null);
+      this.showModal.set(true);
+    } else {
+      this.loading.set(true);
+      const requests = result.itens.map((item: any) => ({
+        descricao: item.descricao,
+        valor: item.valor,
+        data: item.data + 'T12:00:00',
+        tipo: this.mapFrontendToBackend(item.tipo),
+        categoriaId: item.categoriaId
+      }));
+
+      let savedCount = 0;
+      const saveNext = (index: number) => {
+        if (index >= requests.length) {
+          this.loadData();
+          alert(`${savedCount} lançamentos salvos com sucesso! 🚀`);
+          return;
+        }
+
+        this.lancamentoService.create(requests[index]).subscribe({
+          next: () => {
+            savedCount++;
+            saveNext(index + 1);
+          },
+          error: (err) => {
+            console.error('Erro ao salvar item da lista:', err);
+            saveNext(index + 1);
+          }
+        });
+      };
+
+      saveNext(0);
+    }
+  }
+
+  handleCreateCategory(data: { nome: string, tipo: string }) {
+    // Pre-check if category already exists locally to avoid unnecessary API calls or duplicates
+    const alreadyExists = this.categorias().some(
+      c => c.nome.toLowerCase() === data.nome.toLowerCase() && c.tipo === data.tipo
+    );
+
+    if (alreadyExists) {
+      // Just refresh to trigger the setter in MagicScan if it wasn't matched yet
+      this.refreshCategories();
+      return;
+    }
+
+    this.categoriaService.create({
+      nome: data.nome,
+      tipo: data.tipo
+    }).subscribe({
+      next: (newCat) => {
+        this.refreshCategories();
+        // Success feedback is now handled by the button state and automatic linking in the UI
+      },
+      error: (err) => {
+        console.error('Erro ao criar categoria via Magic Scan:', err);
+        alert('Não foi possível criar a categoria automaticamente.');
+      }
+    });
+  }
+
   onTipoChange(tipo: 'Receita' | 'Despesa') {
     this.selectedTipo.set(tipo);
     this.form.categoriaId = 0;
-
-    // Auto-select first category of new type
     const firstCat = this.filteredCategorias()[0];
     if (firstCat) this.form.categoriaId = firstCat.id;
   }
@@ -151,7 +236,7 @@ export class LancamentosComponent implements OnInit {
       descricao: this.form.descricao,
       valor: this.form.valor,
       data: new Date(this.form.data + 'T12:00:00').toISOString(),
-      tipo: this.mapFrontendToBackend(this.selectedTipo()), // Map to Entrada/Saida for Backend
+      tipo: this.mapFrontendToBackend(this.selectedTipo()),
       categoriaId: this.form.categoriaId
     };
 
@@ -166,7 +251,7 @@ export class LancamentosComponent implements OnInit {
       },
       error: (err: any) => {
         console.error('Erro ao salvar lançamento:', err);
-        alert('Erro ao salvar lançamento. Verifique se todos os campos estão corretos.');
+        alert('Erro ao salvar lançamento.');
       }
     });
   }

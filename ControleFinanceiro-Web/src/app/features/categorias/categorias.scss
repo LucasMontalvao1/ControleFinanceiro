@@ -129,10 +129,10 @@
 }
 
 .action-btn {
-    width: 2rem;
-    height: 2rem;
-    border-radius: 0.5rem;
-    border: none;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -142,20 +142,24 @@
     transition: var(--transition);
 
     &:hover {
-        color: var(--text-primary);
+        color: white;
+        border-color: transparent;
+        transform: translateY(-2px);
     }
 
     &.edit:hover {
-        background-color: #3b82f6;
+        background-color: var(--accent-blue);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
     }
 
     &.delete:hover {
-        background-color: #ef4444;
+        background-color: var(--accent-red);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
     }
 
     lucide-icon {
-        width: 1rem;
-        height: 1rem;
+        width: 1.125rem;
+        height: 1.125rem;
     }
 }
 

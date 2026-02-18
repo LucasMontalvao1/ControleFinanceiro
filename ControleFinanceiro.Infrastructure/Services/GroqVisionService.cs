@@ -45,7 +45,7 @@ public class GroqVisionService : IAiReceiptService
         // 1. Rate Limiting Check
         if (!CheckRateLimit(usuarioId))
         {
-            _logger.LogWarning("{CorrelationId} Rate limit exceeded for user {UsuarioId}", correlationId, usuarioId);
+            _logger.LogWarning("Rate limit exceeded for user {UsuarioId} on request {CorrelationId}", usuarioId, correlationId);
             return null;
         }
 
@@ -61,6 +61,10 @@ public class GroqVisionService : IAiReceiptService
 
         try
         {
+            if (base64Image.Contains(","))
+            {
+                base64Image = base64Image.Split(',')[1];
+            }
             // 2. Prepare Request
             var apiKey = _configuration["Groq:ApiKey"];
             if (string.IsNullOrEmpty(apiKey))
@@ -70,6 +74,8 @@ public class GroqVisionService : IAiReceiptService
             }
 
             _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", apiKey);
+
+            _logger.LogInformation("Analyzing receipt via Groq (Model: {Model}, Correlation: {CorrelationId})", Model, correlationId);
 
             var payload = new
             {
@@ -111,13 +117,18 @@ public class GroqVisionService : IAiReceiptService
 
             // 4. Parse Response
             var jsonResponse = await response.Content.ReadAsStringAsync();
+            _logger.LogDebug("{CorrelationId} Raw API response: {Response}", correlationId, jsonResponse);
+
             var chatCompletion = JsonSerializer.Deserialize<JsonElement>(jsonResponse);
             var content = chatCompletion.GetProperty("choices")[0].GetProperty("message").GetProperty("content").GetString();
 
+            _logger.LogInformation("{CorrelationId} AI Content: {Content}", correlationId, content);
             history.RawJson = content;
 
             // 5. Sanitize & Deserialize
             var sanitizedJson = SanitizeJson(content!);
+            _logger.LogInformation("{CorrelationId} Sanitized JSON: {Json}", correlationId, sanitizedJson);
+
             var result = JsonSerializer.Deserialize<ReceiptAnalysisResponse>(sanitizedJson, new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
             if (result == null)
@@ -132,7 +143,7 @@ public class GroqVisionService : IAiReceiptService
             if (result.TotalEstimado <= 0 && (!result.Itens.Any() || result.Itens.Sum(x => x.Valor) <= 0))
             {
                  history.Status = "Failed";
-                 history.ParseError = "Validation: Non-positive total";
+                 history.ParseError = "Empty or zero value receipt detected";
                  await _historyRepository.AddAsync(history);
                  return null;
             }
@@ -177,14 +188,12 @@ public class GroqVisionService : IAiReceiptService
     {
         if (string.IsNullOrWhiteSpace(content)) return "{}";
         
-        // Remove markdown code blocks if present
         var match = Regex.Match(content, @"```json\s*(\{.*\})\s*```", RegexOptions.Singleline);
         if (match.Success)
         {
             return match.Groups[1].Value;
         }
 
-        // Just find the first { and last }
         var start = content.IndexOf('{');
         var end = content.LastIndexOf('}');
         
@@ -198,32 +207,34 @@ public class GroqVisionService : IAiReceiptService
 
     private string GetSystemPrompt()
     {
-        return @"Você é um assistente financeiro de elite. Sua tarefa é converter imagens em JSON estruturado com base no TIPO de imagem.
+        var hoje = DateTime.Today.ToString("yyyy-MM-dd");
+        return $@"Você é um assistente financeiro de elite. Sua tarefa é converter imagens em JSON estruturado com base no TIPO de imagem.
 
 EXEMPLO 1 (CUPOM FISCAL / NOTA):
 - Entrada: Imagem de um cupom de supermercado ou farmácia.
 - Ação: Agrupar TUDO em um único item.
-- Resultado Itens: [{ ""Descricao"": ""Compras - [Nome]"", ""Valor"": [Total], ""CategoriaSugerida"": ""Mercado"", ""Tipo"": ""Saida"" }]
+- Resultado Itens: [{{ ""Descricao"": ""Compras - [Nome]"", ""Valor"": [Total], ""CategoriaSugerida"": ""Mercado"", ""Tipo"": ""Saida"" }}]
 
 EXEMPLO 2 (LISTA MANUSCRITA / CADERNO):
 - Entrada: Foto de uma lista escrita à mão.
 - Ação: Detalhar cada linha da lista.
-- Resultado Itens: [{ ""Descricao"": ""Item 1"", ... }, { ""Descricao"": ""Item 2"", ... }]
+- Resultado Itens: [{{ ""Descricao"": ""Item 1"", ... }}, {{ ""Descricao"": ""Item 2"", ... }}]
 
 REGRAS RÍGIDAS:
 1. SE FOR CUPOM FISCAL: A lista 'Itens' deve conter EXATAMENTE 1 ITEM com o valor total da nota. Use a categoria que melhor descreve a loja (Mercado, Farmácia, Restaurante, Combustível).
 2. SE FOR LISTA MANUAL: Transcreva cada linha como um item separado.
-3. DATA: Formato YYYY-MM-DD. Se oculta, use hoje.
-4. JSON: Retorne APENAS o JSON, sem explicações.
+3. DATA: Formato YYYY-MM-DD. Se ausente ou ilegível na imagem, use OBRIGATORIAMENTE a data de hoje: {hoje}.
+4. VALORES (Decimal vs Inteiro): Se um número NÃO tiver separador (vírgula ou ponto), trate como VALOR INTEIRO. Exemplo: '1300' é 1300.00, não 13.00. Use decimais apenas se houver separador explícito na imagem.
+5. JSON: Retorne APENAS o JSON, sem explicações.
 
 OUTPUT SCHEMA:
-{
-  ""NomeLista"": ""Titulo Curto"",
-  ""Data"": ""YYYY-MM-DD"",
-  ""TotalEstimado"": 0.00,
-  ""Itens"": [
-    { ""Descricao"": ""Nome Item"", ""Valor"": 0.00, ""CategoriaSugerida"": ""Categoria"", ""Tipo"": ""Saida"" }
+{{
+  ""nomeLista"": ""Titulo Curto"",
+  ""data"": ""YYYY-MM-DD"",
+  ""totalEstimado"": 0.00,
+  ""itens"": [
+    {{ ""descricao"": ""Nome Item"", ""valor"": 0.00, ""categoriaSugerida"": ""Categoria"", ""tipo"": ""Saida"" }}
   ]
-}";
+}}";
     }
 }

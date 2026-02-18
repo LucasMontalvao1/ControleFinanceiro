@@ -1,0 +1,146 @@
+<div class="magic-scan-overlay" (click)="onClose()">
+    <div class="magic-scan-modal" (click)="$event.stopPropagation()">
+        <header class="modal-header">
+            <div class="header-title">
+                <lucide-icon name="Sparkles" class="sparkle-icon"></lucide-icon>
+                <h2>{{ reviewing() ? 'Revisar Detalhes' : 'Magic Scan IA' }}</h2>
+            </div>
+            <button type="button" class="close-btn" (click)="onClose()">
+                <lucide-icon name="X"></lucide-icon>
+            </button>
+        </header>
+
+        <div class="modal-body">
+            @if (!reviewing()) {
+            <div class="camera-container" [class.loading]="analyzing()">
+                <video #videoElement [hidden]="capturedImage()" autoplay playsinline></video>
+                <canvas #canvasElement style="display: none;"></canvas>
+
+                @if (capturedImage()) {
+                <img [src]="capturedImage()" class="preview-img" alt="Captured receipt">
+                }
+
+                @if (analyzing()) {
+                <div class="analysis-overlay">
+                    <div class="spinner"></div>
+                    <p>IA analisando recibo...</p>
+                </div>
+                }
+
+                <div class="scan-line" *ngIf="!capturedImage() && streamActive"></div>
+            </div>
+
+            <div class="actions">
+                @if (!capturedImage()) {
+                <button class="btn btn-capture" (click)="capture()">
+                    <div class="pulse-ring"></div>
+                    <lucide-icon name="Camera"></lucide-icon>
+                </button>
+
+                <label class="btn btn-upload">
+                    <lucide-icon name="Upload"></lucide-icon>
+                    <span>Upload</span>
+                    <input type="file" (change)="onFileSelected($event)" accept="image/*" class="hidden-input">
+                </label>
+                } @else {
+                <button class="btn btn-retry" (click)="retry()" [disabled]="analyzing()">
+                    <lucide-icon name="RefreshCw"></lucide-icon>
+                    <span>Tentar Novamente</span>
+                </button>
+
+                <button class="btn btn-primary" (click)="analyze()" [disabled]="analyzing()">
+                    <lucide-icon name="Check"></lucide-icon>
+                    <span>Analisar Agora</span>
+                </button>
+                }
+            </div>
+            } @else {
+            <!-- REVIEW PHASE -->
+            <div class="review-header">
+                <h3>{{ nomeLista }}</h3>
+                <span class="item-count">{{ scannedItems.length }} itens detectados</span>
+            </div>
+
+            <div class="review-items-list">
+                @for (item of scannedItems; track $index) {
+                <div class="review-item-card">
+                    <div class="item-main">
+                        <div class="form-group">
+                            <label>Descrição</label>
+                            <input type="text" [(ngModel)]="item.descricao" [name]="'desc-' + $index">
+                        </div>
+                        <button class="btn-remove" (click)="removeItem($index)">
+                            <lucide-icon name="Trash2"></lucide-icon>
+                        </button>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Valor</label>
+                            <input type="number" [(ngModel)]="item.valor" [name]="'val-' + $index" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Data</label>
+                            <input type="date" [(ngModel)]="item.data" [name]="'date-' + $index">
+                        </div>
+                    </div>
+
+                    <div class="form-group category-group">
+                        <label>Categoria</label>
+                        @if (!item.matchFound && !item.showAllCategories) {
+                        <div class="category-not-found">
+                            <span class="suggested-name">AI sugeriu: <strong>{{ item.categoriaSugerida ||
+                                    'Desconhecida' }}</strong></span>
+                            <div class="not-found-actions">
+                                <button type="button" class="btn-create-cat" (click)="triggerCreateCategory(item)" [disabled]="item.creating">
+                                    {{ item.creating ? 'Criando...' : 'Criar "' + item.categoriaSugerida + '"' }}
+                                </button>
+                                <button type="button" class="btn-link" (click)="item.showAllCategories = true">
+                                    Selecionar outra
+                                </button>
+                            </div>
+                        </div>
+                        } @else {
+                        <select [(ngModel)]="item.categoriaId" [name]="'cat-' + $index"
+                            (change)="item.matchFound = true">
+                            <option [value]="0" disabled>Selecione uma categoria...</option>
+                            @for (cat of categories; track cat.id) {
+                            @if (cat.tipo === item.tipo) {
+                            <option [value]="cat.id">{{ cat.nome }}</option>
+                            }
+                            }
+                        </select>
+                        @if (item.showAllCategories) {
+                        <button class="btn-link-sm"
+                            (click)="item.showAllCategories = false; item.matchFound = false">Voltar à
+                            sugestão</button>
+                        }
+                        }
+                    </div>
+
+                    <div class="item-footer">
+                        <div class="type-mini-toggle">
+                            <button [class.active]="item.tipo === 'Receita'" [class.entrada]="item.tipo === 'Receita'"
+                                (click)="updateItemTipo(item, 'Receita')">Receita</button>
+                            <button [class.active]="item.tipo === 'Despesa'" [class.saida]="item.tipo === 'Despesa'"
+                                (click)="updateItemTipo(item, 'Despesa')">Despesa</button>
+                        </div>
+                    </div>
+                </div>
+                }
+            </div>
+
+            <footer class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="reviewing.set(false); retry()">Refazer
+                    Foto</button>
+                <button type="button" class="btn btn-primary" (click)="confirm()">
+                    <lucide-icon name="CheckCircle"></lucide-icon>
+                    <span>Confirmar e Salvar</span>
+                </button>
+            </footer>
+            }
+
+            <p class="hint" *ngIf="!reviewing()">Mantenha o recibo estável sob boa luz.</p>
+        </div>
+    </div>
+</div>

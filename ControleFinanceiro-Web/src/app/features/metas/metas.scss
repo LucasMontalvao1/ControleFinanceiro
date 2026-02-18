@@ -105,8 +105,8 @@
 }
 
 .info-box {
-    background: rgba(30, 41, 59, 0.5);
-    border: 1px solid #334155;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
     border-radius: 1rem;
     padding: 1.5rem;
     display: flex;
@@ -133,7 +133,7 @@
 
     .info-content {
         h4 {
-            color: #f8fafc;
+            color: var(--text-primary);
             margin-bottom: 0.25rem;
             font-size: 1.1rem;
             font-weight: 600;
@@ -216,7 +216,7 @@
     .actual {
         font-size: 1.5rem;
         font-weight: 700;
-        color: #f8fafc;
+        color: var(--text-primary);
         display: block;
     }
 
@@ -277,9 +277,9 @@
 }
 
 .icon-btn {
-    background: var(--bg-dark);
-    border: none;
-    color: #94a3b8;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    color: var(--text-secondary);
     cursor: pointer;
     width: 36px;
     height: 36px;
@@ -287,6 +287,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: var(--transition);
 
     lucide-icon {
         width: 1.25rem;
@@ -294,7 +295,8 @@
     }
 
     &:hover {
-        color: var(--accent-blue);
+        background: var(--border-color);
+        color: var(--text-primary);
     }
 }
 

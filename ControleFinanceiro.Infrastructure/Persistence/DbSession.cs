@@ -11,8 +11,6 @@ public sealed class DbSession : IDisposable
     public DbSession(IDbConnectionFactory connectionFactory)
     {
         Connection = connectionFactory.CreateConnection();
-        Connection = connectionFactory.CreateConnection();
-        // Garantir que a conexão esteja aberta para uso imediato pelo Dapper
         if (Connection.State != ConnectionState.Open)
             Connection.Open();
     }

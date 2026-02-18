@@ -37,7 +37,11 @@ import {
   PieChart,
   RefreshCw,
   Calendar,
-  Settings2
+  Settings2,
+  Sparkles,
+  Camera,
+  Upload,
+  Check
 } from 'lucide-angular';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth';
@@ -83,10 +87,14 @@ export const appConfig: ApplicationConfig = {
       PieChart,
       RefreshCw,
       Calendar,
-      Settings2
+      Settings2,
+      Sparkles,
+      Camera,
+      Upload,
+      Check
     })), provideServiceWorker('ngsw-worker.js', {
-            enabled: !isDevMode(),
-            registrationStrategy: 'registerWhenStable:30000'
-          })
+      enabled: !isDevMode(),
+      registrationStrategy: 'registerWhenStable:30000'
+    })
   ]
 };

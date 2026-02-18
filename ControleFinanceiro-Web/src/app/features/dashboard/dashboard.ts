@@ -76,8 +76,8 @@ export class DashboardComponent implements OnInit {
         // 1. DAILY EVOLUTION (Selected Month)
         this.dailyTrendChartOptions = {
             series: [
-                { name: 'Receitas', data: dailyMeta.map(t => t.entradas), color: '#10b981' },
-                { name: 'Despesas', data: dailyMeta.map(t => t.saidas), color: '#ef4444' }
+                { name: 'Receitas', data: dailyMeta.map(t => t.entradas || 0), color: '#10b981' },
+                { name: 'Despesas', data: dailyMeta.map(t => t.saidas || 0), color: '#ef4444' }
             ],
             chart: {
                 height: 350, type: 'bar', toolbar: { show: false }, background: 'transparent', foreColor: '#94a3b8'
@@ -88,7 +88,14 @@ export class DashboardComponent implements OnInit {
                 formatter: (val: number) => val > 0 ? val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 }) : ''
             },
             xaxis: {
-                categories: dailyMeta.map(t => new Date(t.data).toLocaleDateString('pt-BR')),
+                categories: dailyMeta.map(t => {
+                    try {
+                        const date = new Date(t.data);
+                        return isNaN(date.getTime()) ? 'N/A' : date.toLocaleDateString('pt-BR');
+                    } catch {
+                        return 'N/A';
+                    }
+                }),
                 axisBorder: { show: false }, axisTicks: { show: false },
             },
             yaxis: { labels: { formatter: (val: number) => val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) } },
@@ -96,11 +103,11 @@ export class DashboardComponent implements OnInit {
             grid: { borderColor: '#1e293b', strokeDashArray: 4 }
         };
 
-        // 2. YEARLY TREND BAR (6 Months) - Grouped bars for Income x Expenses
+        // 2. YEARLY TREND BAR (6 Months)
         this.yearlyTrendChartOptions = {
             series: [
-                { name: 'Entradas', data: yearlyMeta.map(y => y.entradas), color: '#10b981' },
-                { name: 'Saídas', data: yearlyMeta.map(y => y.saidas), color: '#ef4444' }
+                { name: 'Entradas', data: yearlyMeta.map(y => y.entradas || 0), color: '#10b981' },
+                { name: 'Saídas', data: yearlyMeta.map(y => y.saidas || 0), color: '#ef4444' }
             ],
             chart: {
                 height: 350, type: 'bar', toolbar: { show: false }, background: 'transparent', foreColor: '#94a3b8'
@@ -119,9 +126,9 @@ export class DashboardComponent implements OnInit {
             grid: { borderColor: '#1e293b', strokeDashArray: 4 }
         };
 
-        // 3. YEARLY BALANCE AREA (6 Months) - Smooth area chart
+        // 3. YEARLY BALANCE AREA (6 Months)
         this.yearlyBalanceChartOptions = {
-            series: [{ name: 'Saldo', data: yearlyMeta.map(y => y.saldo) }],
+            series: [{ name: 'Saldo', data: yearlyMeta.map(y => y.saldo || 0) }],
             chart: {
                 height: 350, type: 'area', toolbar: { show: false }, background: 'transparent', foreColor: '#94a3b8'
             },
@@ -147,8 +154,8 @@ export class DashboardComponent implements OnInit {
         };
 
         // 4. CATEGORY DONUT
-        const catLabels = data.gastosPorCategoria.map(c => c.categoria);
-        const catValues = data.gastosPorCategoria.map(c => c.valor);
+        const catLabels = data.gastosPorCategoria.map(c => c.categoria || 'Outros');
+        const catValues = data.gastosPorCategoria.map(c => c.valor || 0);
         this.categoryChartOptions = {
             series: catValues,
             chart: { height: 350, type: 'donut', background: 'transparent', foreColor: '#94a3b8' },
@@ -162,7 +169,7 @@ export class DashboardComponent implements OnInit {
                             show: true,
                             total: {
                                 show: true, label: 'Total', color: '#f8fafc',
-                                formatter: () => data.totalSaidas.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                                formatter: () => (data.totalSaidas || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
                             }
                         }
                     }

@@ -1,4 +1,9 @@
 <div class="page-container">
+    <!-- Magic Scan Modal -->
+    <app-magic-scan *ngIf="showMagicScan()" [categories]="categorias()" (close)="showMagicScan.set(false)"
+        (scanResult)="handleScanResult($event)" (createCategory)="handleCreateCategory($event)">
+    </app-magic-scan>
+
     <div class="page-header">
         <div class="header-info">
             <h1>Transações</h1>
@@ -20,6 +25,11 @@
                 <button type="button" class="btn btn-export">
                     <lucide-icon name="Download"></lucide-icon>
                     <span>Exportar</span>
+                </button>
+
+                <button type="button" class="btn btn-magic" (click)="openMagicScan()">
+                    <lucide-icon name="Sparkles"></lucide-icon>
+                    <span>Magic Scan</span>
                 </button>
 
                 <button type="button" class="btn btn-primary" (click)="openModal()">
@@ -69,8 +79,10 @@
                 <div class="t-value" [class.receita]="t.tipo === 'Receita'" [class.despesa]="t.tipo === 'Despesa'">
                     {{ t.tipo === 'Receita' ? '+' : '-' }} R$ {{ t.valor | number:'1.2-2' }}
                 </div>
+
             </div>
         </div>
+
         }
     </div>
 </div>
@@ -145,4 +157,5 @@
             </footer>
         </form>
     </div>
+
 </div>

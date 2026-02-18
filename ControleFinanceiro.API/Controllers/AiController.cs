@@ -26,7 +26,7 @@ public class AiController : ControllerBase
     }
 
     [HttpPost("analyze")]
-    public async Task<IActionResult> Analyze([FromBody] UploadImageDto request)
+    public async Task<IActionResult> Analyze([FromForm] IFormFile file)
     {
         var correlationId = Guid.NewGuid().ToString();
         var userIdString = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
@@ -37,21 +37,25 @@ public class AiController : ControllerBase
             return Unauthorized();
         }
 
-        if (string.IsNullOrEmpty(request.Base64Image))
+        if (file == null || file.Length == 0)
         {
-            return BadRequest("Imagem não fornecida.");
+            return BadRequest("Arquivo de imagem não fornecido.");
         }
+
+        using var ms = new MemoryStream();
+        await file.CopyToAsync(ms);
+        var base64Image = Convert.ToBase64String(ms.ToArray());
 
         _logger.LogInformation("{CorrelationId} Iniciando a análise de IA para o usuário {UserId}", correlationId, userId);
 
-        var result = await _aiService.AnalyzeReceiptAsync(request.Base64Image, userId, correlationId);
+        var result = await _aiService.AnalyzeReceiptAsync(base64Image, userId, correlationId);
 
         if (result != null)
         {
-            return Ok(Result<ReceiptAnalysisResponse>.Ok(result));
+            return Ok(result);
         }
 
         _logger.LogError("{CorrelationId} A análise de IA falhou ou retornou nulo.", correlationId);
-        return BadRequest(Result<ReceiptAnalysisResponse>.Fail("Erro ao processar imagem na IA."));
+        return BadRequest("Erro ao processar imagem na IA.");
     }
 }
