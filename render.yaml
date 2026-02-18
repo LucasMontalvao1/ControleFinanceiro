@@ -11,6 +11,8 @@ services:
         value: Production
       - key: ConnectionStrings__DefaultConnection
         sync: false 
+      - key: Groq__ApiKey
+        sync: false
 
   # Frontend (Angular)
   - type: web
